@@ -37,6 +37,7 @@ NO_NEED_LOG_PATH = ["/static"]
 
 LOG_PATH = "logs"
 
+ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 '''
 config some Key

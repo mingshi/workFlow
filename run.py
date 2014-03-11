@@ -6,7 +6,7 @@ FileName:   run.py
 '''
 # -*- coding: utf-8 -*-
 
-from kele import app
+from wf import app
 
 if __name__ == "__main__" :
     if app.config['DEBUG'] :
