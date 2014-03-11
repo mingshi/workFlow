@@ -52,3 +52,14 @@ CREATE TABLE `attachment` (
     PRIMARY KEY (`id`),
     KEY `get_attach` (`flow_id`, `create_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `messages` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `create_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '留言用户id',
+    `flow_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属的流程id',
+    `notice_user_id` varchar(255) DEFAULT '' COMMENT '要通知到的人的id,以逗号隔开',
+    `msg` text COMMENT '留言内容',
+    `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `get_msg` (`flow_id`, `create_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
