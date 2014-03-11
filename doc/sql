@@ -18,12 +18,37 @@ CREATE TABLE `step` (
     `flow_id` int(11) NOT NULL DEFAULT '0' COMMENT '流程id',
     `step` int(10) NOT NULL DEFAULT '1' COMMENT '步骤计数',
     `step_uid` int(11) NOT NULL DEFAULT '0' COMMENT '审批用户的uid',
-    `approval_status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '审批状态 1为通过 2为转签 3为驳回',
-    `approval_msg` text() DEFAULT '' COMMENT '审批的信息',
+    `approval_status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '审批状态 1为通过 2为转签 3为加签 4为驳回 5为不同意但继续 6为',
+    `approval_msg` text DEFAULT COMMENT '审批的信息',
     `next_step_uid` int(11) NOT NULL DEFAULT '0' COMMENT '下一个审批用户的uid',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`),
     KEY `get_flow_step` (`flow_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `flow` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `type` int(10) NOT NULL DEFAULT '1' COMMENT '流程类型 1为媒体测试流程 2为媒体正式接入流程 3为媒体结算付款流程 4为合同审批流程',
+    `create_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '申请用户id,member中的用户id',
+    `create_user` varchar(50) NOT NULL DEFAULT '' COMMENT '申请用户姓名',
+    `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属部门id',
+    `department` varchar(50) NOT NULL DEFAULT '' COMMENT '所属部门名称',
+    `phone` varchar(20) NOT NULL DEFAULT '' COMMENT '申请用户电话',
+    `email` varchar(50) NOT NULL DEFAULT '' COMMENT '申请用户的email',
+    `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '流程状态 0为新建 1为进行中 2为驳回 3为结束',
+    `detail` text COMMENT '流程的一些详细信息 json格式',
+    `relation` varchar(255) DEFAULT '' COMMENT '关联的流程id 逗号分割',
+    `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
+    `end_time` TIMESTAMP COMMENT '流程结束时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `attachment` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `flow_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属的流程id',
+    `path` varchar(255) NOT NULL DEFAULT '' COMMENT '附件路径',
+    `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `create_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '上传用户id,member中的用户id',
+    PRIMARY KEY (`id`),
+    KEY `get_attach` (`flow_id`, `create_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;

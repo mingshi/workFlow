@@ -17,4 +17,6 @@ if os.path.exists(app.config['ROOT_PATH'] + "/env.py"):
     app.config.from_object("env")
 app.config.from_object("config.%sConfig" % (app.config['ENV']) )
 
+configFile = os.path.join(app.root_path, 'BaseWFConfig.py')
 
+app.config.from_pyfile(configFile)
