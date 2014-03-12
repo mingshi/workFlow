@@ -1,0 +1,74 @@
+
+body { padding-top: 20px; }
+img { border-radius: 3px; }
+
+.main_content {padding:10px;}
+
+.pagination-page-info {
+    padding: .6em;
+    padding-left: 0;
+    width: 40em;
+    margin: .5em;
+    margin-left: 0;
+    font-size: 12px;
+}
+.pagination-page-info b {
+    color: black;
+    background: #6aa6ed;
+    padding-left: 2px;
+    padding: .1em .25em;
+    font-size: 150%;
+}
+
+#popup-msg {
+    border-radius: 0 0 3px 3px;
+    font-size: 14px;
+    position: fixed !important;
+    top: 0;
+    z-index: 10000;
+}
+
+.container {
+    width: 100%;
+    overflow: hidden;
+}
+
+#main {
+    margin: 40px auto 0 auto;
+    width: 1200px;
+}
+
+.navbar-fixed-top .container, .navbar-fixed-bottom .container {
+    width: 1200px;
+}
+
+.sidebar-nav {
+    padding: 9px 0;
+}
+
+.nav-list {
+    margin-bottom: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.backMain {
+    overflow: hidden;
+    margin-left: 30px;
+}
+
+.input-append, .input-prepend {
+    display: inline-block;
+}
+
+.modal.fade.in {
+    top: 58%;
+}
+
+.backMain {
+    overflow: visible;
+}
+
+.container {
+    overflow: visible;
+}

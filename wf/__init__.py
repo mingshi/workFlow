@@ -20,3 +20,33 @@ app.config.from_object("config.%sConfig" % (app.config['ENV']) )
 configFile = os.path.join(app.root_path, 'BaseWFConfig.py')
 
 app.config.from_pyfile(configFile)
+
+'''
+follow import views package
+'''
+from wf.views import login, captcha, index
+
+app.register_blueprint(login.mod)
+app.register_blueprint(captcha.mod)
+app.register_blueprint(index.mod)
+
+'''
+views import finished
+'''
+
+
+
+@app.before_request
+def before_request() :
+    path = request.path
+    key = app.config['LOGIN_SESSION_NAME']
+    if not ("'" + key + "'" in session) :
+        rycle = 0
+        for tmpPath in app.config['NO_NEED_LOGIN'] :
+            if not tmpPath in path :
+                continue
+            else :
+                rycle += 1
+                break
+        if rycle == 0 :
+            return redirect('login')

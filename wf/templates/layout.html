@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}互众工作流平台{% endblock%}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" media="all" />
+    {% block head_css %}{% endblock %}
+    {#
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap-responsive.min.css') }}" media="all" />
+    #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='c/mc.css') }}" media="all" />
+    <script src="{{ url_for('static', filename='jquery-1.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='k.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.searchabledropdown-1.0.8.min.js') }}"></script>
+    {% block head_script %}{% endblock %}    
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="/">互众工作流程平台</a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        {% if "'" + config.SESSION_REAL_NAME  + "'" in session %}
+                        <li>我的工作区</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="brand" style="float:right;">
+                    Hello!
+                    {% if not session["'" + config.SESSION_REAL_NAME  + "'"] %}
+                        浪子
+                    {% else %}
+                        {{ session["'" + config.SESSION_REAL_NAME  + "'"] }}
+                        <a href="/logout" style="font-size:12px">退出</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="container">
+        <header id="header">
+        </header> 
+        
+        <div id="main" class="row">
+            {% block main %}{% endblock %}
+        </div>
+
+    </div>
+        
+    <div id="popup-msg" class="alert" style="display:none"></div>
+    </div>
+    
+    <footer style="text-align:center;">
+        <p>Adeaz Work Flow V0.1 By Tech Department! I LIKE PYTHON, WE NEED PYTHONIC, & U WILL LIKE PYTHON & LOVE ME ^v^, WILL U ?</p>
+    </footer>
+
+    {% block footer_script %}{% endblock %}
+    <script src="{{ url_for('static', filename='common.js') }}"></script>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+    <script type="text/javascript">
+        $(function(){
+            {% for category, message in messages %}
+            popup_msg("{{ message }}", "{{ category }}");
+            {% endfor %}
+        });
+    </script>
+    {% endif %}
+    {% endwith %} 
+</body>
+</html>
+
