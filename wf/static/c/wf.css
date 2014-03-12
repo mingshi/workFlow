@@ -55,6 +55,8 @@ img { border-radius: 3px; }
 .backMain {
     overflow: hidden;
     margin-left: 30px;
+    float: left;
+    width: 1024px;
 }
 
 .input-append, .input-prepend {
@@ -71,4 +73,13 @@ img { border-radius: 3px; }
 
 .container {
     overflow: visible;
+}
+
+.thumbnails li {
+    text-align: center;
+    width: 120px;
+}
+
+.thumbnails li img {
+    width: 80px;
 }

@@ -3,4 +3,26 @@
 {% block title %}发起流程{% endblock %}
 
 {% block main %}
+<div class="backMain">
+    <fieldset>
+        <legend>媒体类</legend>
+    </fieldset>
+
+    <div>
+        <ul class="thumbnails">
+            <li class="span2"><a href="/flow/add/1"><img src="{{ url_for('static', filename="test.png") }}" /></a><p>
+                <span><a href="/flow/add/1">媒体测试流程</a></span>
+            </li>
+            <li class="span2"><a href="/flow/add/2"><img src="{{ url_for('static', filename="connect.png") }}" /></a><p>
+                <span><a href="/flow/add/1">媒体正式接入流程</a></span>
+            </li>
+            <li class="span2"><a href="/flow/add/3"><img src="{{ url_for('static', filename="pay.png") }}" /></a><p>
+                <span><a href="/flow/add/1">媒体结算付款流程</a></span>
+            </li>
+            <li class="span2"><a href="/flow/add/4"><img src="{{ url_for('static', filename="contract.png") }}" /></a><p>
+                <span><a href="/flow/add/1">媒体合同审批流程</a></span>
+            </li>
+        </ul>
+    </div>
+</div>
 {% endblock %}
