@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 '''
 Author  :   Mingshi <fivemingshi@gmail.com>
-Created :   2014/03/12 15:38:28
-FileName:   index.py
+Created :   2014/03/12 16:13:39
+FileName:   flow.py
 '''
 
 from flask import Blueprint, render_template, request, url_for, redirect, session, g
@@ -17,9 +17,9 @@ from flask.ext.sqlalchemy import Pagination
 import math
 from wf.util.libs import *
 
-mod = Blueprint("index", __name__)
-@mod.route('/', methods=['GET'])
-@mod.route('/index', methods=['GET'])
-def index() :
-    return redirect('/flow/add')
-    return render_template('wf/index.html')
+mod = Blueprint('flow', __name__)
+
+@mod.route('/flow/add', methods=['GET'])
+def flow_add() :
+    return render_template('wf/flow_add.html')
+

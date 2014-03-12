@@ -25,7 +25,7 @@
                 <div class="nav-collapse">
                     <ul class="nav">
                         {% if "'" + config.SESSION_REAL_NAME  + "'" in session %}
-                        <li>我的工作区</li>
+                        <li class="active"><a href="/flow/add">我的工作区</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -48,6 +48,19 @@
         </header> 
         
         <div id="main" class="row">
+            <div class="span2" style="width:108px;">
+                <div class="well sidebar-nav">
+                    <ul class="nav nav-list">
+                        <li {% if g.homePath == "flow" %} class="active"{% endif %}><a href="/flow/add">发起流程</a></li>
+                        <li {% if g.homePath == "my" %} class="active"{% endif %}><a href="/my/approval">请您审批</a></li>
+                        <li {% if g.homePath == "create" %} class="active"{% endif %}><a href="/create/log">申请记录</a></li>
+                        <li {% if g.homePath == "approval" %} class="active"{% endif %}><a href="/approval/log">审批记录</a></li>
+                        <li {% if g.homePath == "notice" %} class="active"{% endif %}><a href="/notice/my">我的收文</a></li>
+                    </ul>
+                </div>
+            
+            </div>
+
             {% block main %}{% endblock %}
         </div>
 
