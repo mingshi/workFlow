@@ -16,10 +16,29 @@ import json
 from flask.ext.sqlalchemy import Pagination
 import math
 from wf.util.libs import *
+from datetime import date
 
 mod = Blueprint('flow', __name__)
 
 @mod.route('/flow/add', methods=['GET'])
 def flow_add() :
     return render_template('wf/flow_add.html')
+
+@mod.route('/flow/add/<id>', methods=['GET'])
+def flow_add_by_type(id) :
+    id = int(id)
+
+    if id == 1 :
+        temp = "test.html"
+    elif id == 2 :
+        temp = "connect.html"
+    elif id == 3 :
+        temp = "pay.html"
+    elif id == 4 :
+        temp = "contract.html"
+    else :
+        temp = "test.html"
+    
+    today = str(date.today())
+    return render_template('wf/' + temp, today = today)
 

@@ -1,0 +1,308 @@
+{% extends "layout.html" %}
+
+{% block title %}创建媒体测试流程{% endblock %}
+
+{% block main %}
+<link rel="stylesheet" href="{{ url_for('static', filename='datetimepicker/jquery.datetimepicker.css') }}" media="all" />
+<script src="{{ url_for('static', filename='datetimepicker/jquery.datetimepicker.js') }}"></script>
+<div class="backMain">
+    <fieldset>
+        <legend>创建媒体测试流程</legend>
+    </fieldset>
+
+    <ul class="thumbnails inline create">
+        <li>申请人: {{ session["'" + config.SESSION_REAL_NAME + "'"] }}</li>
+        <li>申请日期: {{ today }}</li>
+        <li>所属部门: {{ session["'" + config.USER_INFO_DEPARTMENT + "'"] }}</li>
+        <li>联系电话: {{ session["'" + config.USER_INFO_MOBILE + "'"] }}</li>
+        <li>电子邮件: {{ session["'" + config.USER_INFO_EMAIL + "'"] }}</li>
+    </ul>
+
+    <form class="ajax form-horizontal" autocomplete="off" method="post" action="/flow/save/1">
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                标题
+            </label>
+            <div class="controls">
+                <input class="input-xxlarge" type="text" name="subject" />
+            </div>
+        </div>
+        
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    媒体类别
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="media_type" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    广告位置
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="ad_position" />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    预估效果
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="es_effect" />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    测试时长
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="test_consume" />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    客户类型
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="custom_type" />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    素材要求
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="material_require" />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    敏感地域
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="sensitive_area" />
+                </div>
+            </div>
+
+        </div>
+
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    关联流程ID
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="relation_id" />
+                </div>
+            </div>
+            
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    投放媒体名称
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="media_name" />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    预计采购成本
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="es_cost" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    测试成本
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="test_cost" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    禁投客户类型
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="disable_custom_type" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    素材尺寸
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="material_size" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    媒体负责人
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="media_admin" />
+                </div>
+            </div>
+        </div>
+        
+        <div style="clear: both;"></div>
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                具体测试时间
+            </label>
+            <div class="controls">
+                <input id="start_date" class="input-small" type="text" name="start_date" placeholder="开始时间" />
+                <input class="input-small" type="text" name="start_time" placeholder="开始时间段" /> -
+                <input id="end_date" class="input-small" type="text" name="end_date" placeholder="结束日期" />
+                <input class="input-small" type="text" name="end_time" placeholder="结束时间段" />
+            </div>
+        </div>
+
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    付款方式
+                </label>
+                <div class="controls">
+                    <select id="pay_type" name="pay_type">
+                        <option value="1">免费</option>
+                        <option value="2">后付</option>
+                        <option value="3">预付</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    付款总额
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="pay_cost" />
+                </div>
+            </div>
+        </div>
+
+        <div style="clear: both;"></div>
+        <div id="is_show" style="display: none;">
+            
+            <div style="float: left;">
+                <div class="control-group">
+                    <label class="control-label">
+                        <i>*</i>
+                        付款公司
+                    </label>
+                    <div class="controls">
+                        <input class="input-large" type="text" name="pay_company" />
+                    </div>
+                </div>
+            </div>
+            <div style="float: left;">
+                <div class="control-group">
+                    <label class="control-label">
+                        <i>*</i>
+                        最晚付款时间
+                    </label>
+                    <div class="controls">
+                        <input id="end_pay_time" class="input-large" type="text" name="end_pay_time" />
+                    </div>
+                </div>
+            </div>
+
+            <div style="clear: both;"></div>
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    媒体账户名
+                </label>
+                <div class="controls">
+                    <input class="input-xxlarge" name="media_account" type="text" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    银行卡号
+                </label>
+                <div class="controls">
+                    <input class="input-xxlarge" name="card_number" type="text" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    开户行名称
+                </label>
+                <div class="controls">
+                    <input class="input-xxlarge" name="media_bank" placeholder="xxx银行 xxx支行" type="text" />
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+    </form>
+</div>
+{% endblock %}
+
+{% block footer_script %}
+<script type="text/javascript">
+$(function() {
+    $("#start_date, #end_date").datetimepicker({
+        timepicker:false,
+        format: 'Y-m-d',
+        lang: 'ch',
+    });
+    $("#end_pay_time").datetimepicker({
+        format: 'Y-m-d H:i:s',
+        lang: 'ch',
+    });
+    
+    $("#pay_type").change(function() {
+        if ($("#pay_type").val() == 3) {
+            $("#is_show").show();
+        } else {
+            $("#is_show").hide();
+        }
+    });
+
+});
+</script>
+{% endblock %}

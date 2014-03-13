@@ -50,6 +50,13 @@ LOGIN_KEY = "7d26eda13b33c1257999de31bcd8ebfc"
 SIG_KEY = "adeazMemberSigKey@#$%^&"
 AUTH_URL = "http://member.adeaz.com/api/login"
 
+USER_INFO_KEY = "3ec8e544422a626075d904d0a9be0dcb"
+USER_INFO_SIGN = "!adeazMemberUiFO7&^%"
+USER_INFO_MOBILE = "adEazWorkFlowUserMobile"
+USER_INFO_EMAIL = "adEazWorkFlowUserEmail"
+USER_INFO_DEPARTMENT = "adEazWorkFlowUserDepartment"
+USER_INFO_URL = "http://member.adeaz.com/api/userinfo_by_username"
+
 SESSION_REAL_NAME = "adeazWF_realname"
 SESSION_UID = "adeazWF_uid"
 

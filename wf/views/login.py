@@ -41,13 +41,22 @@ def login() :
                         user.login_ip = login_ip
                         db_session.commit()
 
+                    # 获取用户的基本信息 由于多了一个http请求,需要优化
+                    userInfo = get_user_info(form.data['username'])
+                    userRealInfo = json.loads(userInfo)
+
+                    if userRealInfo['msg'] == 'success' and userRealInfo['status'] == 'ok' :
+                        session["'" + app.config['USER_INFO_MOBILE'] + "'"] = userRealInfo['info'][0]['mobile']
+                        session["'" + app.config['USER_INFO_EMAIL'] + "'"] = userRealInfo['info'][0]['email']
+                        session["'" + app.config['USER_INFO_DEPARTMENT'] + "'"] = userRealInfo['info'][0]['department']
+
                     key = app.config['LOGIN_SESSION_NAME']
                     session["'" + key + "'"] = form.data['username']
                     keyRealName = app.config['SESSION_REAL_NAME']
                     session["'" + keyRealName + "'"] = resource['info']['realname']
                     keyUid = app.config['SESSION_UID']
                     session["'" + keyUid + "'"] = resource['info']['id']
-
+                    
                     return redirect('/index')
                 else :
                     message = resource['msg']
@@ -71,5 +80,8 @@ def logout() :
     session.pop("'" + key + "'", None)
     session.pop("'" + app.config['SESSION_REAL_NAME'] + "'", None)
     session.pop("'" + app.config['SESSION_UID'] + "'", None)
+    session.pop("'" + app.config['USER_INFO_MOBILE'] + "'", None)
+    session.pop("'" + app.config['USER_INFO_EMAIL'] + "'", None)
+    session.pop("'" + app.config['USER_INFO_DEPARTMENT'] + "'", None)
 
     return redirect('/')

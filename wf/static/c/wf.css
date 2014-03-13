@@ -83,3 +83,13 @@ img { border-radius: 3px; }
 .thumbnails li img {
     width: 80px;
 }
+
+.create li {
+    width: 186px;
+}
+
+.control-label i {
+    color: #FF0000;
+    font-weight: bold;
+    padding-right: 5px;
+}

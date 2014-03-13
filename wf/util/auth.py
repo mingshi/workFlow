@@ -88,5 +88,30 @@ def do_login(username, password) :
         return res
 
 
+def get_user_info(username) :
+    sign = create_user_info_sign(username)
+    post_data_dic = {"username" : username, "key" : app.config['USER_INFO_KEY'], "sign" : sign}
 
+    try :
+        ch = pycurl.Curl()
+        ch.fp = StringIO.StringIO()
+        ch.setopt(pycurl.URL, app.config['USER_INFO_URL'])
+        ch.setopt(pycurl.AUTOREFERER, 1)
+        ch.setopt(pycurl.FOLLOWLOCATION, 1)
+        ch.setopt(pycurl.CONNECTTIMEOUT, 300)
+        ch.setopt(pycurl.TIMEOUT, 500)
+        ch.setopt(pycurl.POSTFIELDS, urllib.urlencode(post_data_dic))
+        ch.setopt(pycurl.WRITEFUNCTION, ch.fp.write)
+        ch.perform()
 
+        res = ch.fp.getvalue()
+
+    except :
+        res = "error"
+        return res
+    else :
+        return res
+
+def create_user_info_sign(username) :
+    tmp = "key=" + app.config['USER_INFO_SIGN'] + "&username=" + username
+    return md5.new(tmp).hexdigest()
