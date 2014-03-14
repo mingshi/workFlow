@@ -5,6 +5,12 @@
 {% block main %}
 <link rel="stylesheet" href="{{ url_for('static', filename='datetimepicker/jquery.datetimepicker.css') }}" media="all" />
 <script src="{{ url_for('static', filename='datetimepicker/jquery.datetimepicker.js') }}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='blueimpUpload/css/jquery.fileupload.css') }}" media="all" />
+<link rel="stylesheet" href="{{ url_for('static', filename='blueimpUpload/css/jquery.fileupload-ui.css') }}" media="all" />
+<noscript><link rel="stylesheet" href="{{ url_for('static', filename='blueimpUpload/css/jquery.fileupload-noscript.css') }}" media="all"></noscript>
+<noscript><link rel="stylesheet" href="{{ url_for('static', filename='blueimpUpload/css/jquery.fileupload-ui-noscript.css') }}" media="all"></noscript>
+
 <div class="backMain">
     <fieldset>
         <legend>创建媒体测试流程</legend>
@@ -274,6 +280,15 @@
                 </div>
             </div>
         </div>
+        
+        <div class="control-group">
+            <label class="control-label">
+                附件
+            </label>
+            <div class="controls">
+                <a href="#myUpload" role="button" class="btn btn-info" data-toggle="modal">上传附件</a>
+            </div>
+        </div>
 
         <div class="control-group">
             <div class="controls">
@@ -281,10 +296,63 @@
                 <button type="submit" class="btn btn-large btn-primary">提交</button>
             </div>
         </div>
-
-
-
     </form>
+
+    <div id="myUpload" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myUploadLabel">上传附件</h3>
+        </div>
+        <div class="modal-body">
+
+            <form id="fileupload" action="/flow/uploadFile" method="POST" enctype="multipart/form-data"> 
+                <div class="row fileupload-buttonbar">
+                    <div class="col-lg-7">
+                        <span class="btn btn-success fileinput-button" style="margin-left: 30px;">
+                            <i class="glyphicon glyphicon-plus"></i>
+                            <span>添加文件</span>
+                            <input type="file" name="files[]" multiple>
+                        </span>
+
+                        <button type="submit" class="btn btn-primary start">
+                            <i class="glyphicon glyphicon-upload"></i>
+                            <span>开始上传</span>
+                        </button>
+
+                        <button type="reset" class="btn btn-warning cancel">
+                            <i class="glyphicon glyphicon-ban-circle"></i>
+                            <span>取消上传</span>
+                        </button>
+
+                        <button type="button" class="btn btn-danger delete">
+                            <i class="glyphicon glyphicon-trash"></i>
+                            <span>Delete</span>
+                        </button>
+                        <input type="checkbox" class="toggle">
+                        <span class="fileupload-process"></span>
+                    </div>
+
+                    <div class="col-lg-5 fileupload-progress fade">
+                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                        </div>
+                        <div class="progress-extended">&nbsp;</div>
+                    </div>
+                </div>
+                <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table> 
+            </form>
+        </div>
+
+        <script id="template-upload" type="text/x-tmpl">
+            for (var i=0, i<=10; i++) {
+                console.log(i);
+            }
+        </script>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+            <button class="btn btn-primary">保存</button>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -311,4 +379,11 @@ $(function() {
 
 });
 </script>
+
+<script src="{{ url_for('static', filename='blueimpUpload/js/vendor/jquery.ui.widget.js') }}"></script>
+<script src="{{ url_for('static', filename='blueimpUpload/js/jquery.iframe-transport.js') }}"></script>
+<script src="{{ url_for('static', filename='blueimpUpload/js/jquery.fileupload.js') }}"></script>
+<script src="{{ url_for('static', filename='blueimpUpload/js/cors/jquery.xdr-transport.js') }}"></script>
+<script src="{{ url_for('static', filename='blueimpUpload/js/tmpl.min.js') }}"></script>
+<script src="{{ url_for('static', filename='blueimpUpload/js/load-image.min.js') }}"></script>
 {% endblock %}
