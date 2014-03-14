@@ -17,6 +17,7 @@ from flask.ext.sqlalchemy import Pagination
 import math
 from wf.util.libs import *
 from datetime import date
+from formValidate.testFlowForm import testFlowForm
 
 mod = Blueprint('flow', __name__)
 
@@ -24,21 +25,25 @@ mod = Blueprint('flow', __name__)
 def flow_add() :
     return render_template('wf/flow_add.html')
 
-@mod.route('/flow/add/<id>', methods=['GET'])
+@mod.route('/flow/add/<id>', methods=['GET', 'POST'])
 def flow_add_by_type(id) :
+    form = testFlowForm()
     id = int(id)
-
-    if id == 1 :
-        temp = "test.html"
-    elif id == 2 :
-        temp = "connect.html"
-    elif id == 3 :
-        temp = "pay.html"
-    elif id == 4 :
-        temp = "contract.html"
-    else :
-        temp = "test.html"
     
+    temp = get_type_temp(id)
     today = str(date.today())
-    return render_template('wf/' + temp, today = today)
+
+    if request.method == "POST" :
+        is_ajax = request.form['is_ajax']
+        ret = {}
+        if form.validate_on_submit() :
+            pass
+            return "11111"
+        else :
+            if is_ajax :
+                return flash_form(form, True, -1)
+            else :
+                return render_template('wf/' + temp, today = today, form = form)
+    else :
+        return render_template('wf/' + temp, today = today, form = form)
 

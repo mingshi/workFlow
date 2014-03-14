@@ -49,7 +49,7 @@ def login() :
                         session["'" + app.config['USER_INFO_MOBILE'] + "'"] = userRealInfo['info'][0]['mobile']
                         session["'" + app.config['USER_INFO_EMAIL'] + "'"] = userRealInfo['info'][0]['email']
                         session["'" + app.config['USER_INFO_DEPARTMENT'] + "'"] = userRealInfo['info'][0]['department']
-
+                        session["'" + app.config['USER_INFO_HIGHER'] + "'"] = userRealInfo['info'][0]['higher']
                     key = app.config['LOGIN_SESSION_NAME']
                     session["'" + key + "'"] = form.data['username']
                     keyRealName = app.config['SESSION_REAL_NAME']

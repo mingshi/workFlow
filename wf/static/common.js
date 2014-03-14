@@ -66,7 +66,7 @@
     
     $(document).delegate('form.ajax', 'submit', function(event){
         event.preventDefault();
-
+       
         var base_version;
         if (/version=(\w+)/.test(location.search)) {
             if (!confirm('你当前提交不是基于最新版本的数据，是否继续？')) {
@@ -75,7 +75,7 @@
 
             base_version = RegExp.$1;
         }
-
+        
         popup_msg('数据保存中...', 'info');
         var $f = $(this);
         
@@ -110,7 +110,7 @@
                     }
                 }
             }
-
+            
             if (ret && ret.redirect_uri) {
                 
                 hide_popup_msg();

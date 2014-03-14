@@ -55,6 +55,7 @@ USER_INFO_SIGN = "!adeazMemberUiFO7&^%"
 USER_INFO_MOBILE = "adEazWorkFlowUserMobile"
 USER_INFO_EMAIL = "adEazWorkFlowUserEmail"
 USER_INFO_DEPARTMENT = "adEazWorkFlowUserDepartment"
+USER_INFO_HIGHER = "adEazWorkFlowUserHigher"
 USER_INFO_URL = "http://member.adeaz.com/api/userinfo_by_username"
 
 SESSION_REAL_NAME = "adeazWF_realname"

@@ -18,8 +18,9 @@
         <li>电子邮件: {{ session["'" + config.USER_INFO_EMAIL + "'"] }}</li>
     </ul>
 
-    <form class="ajax form-horizontal" autocomplete="off" method="post" action="/flow/save/1">
+    <form class="ajax form-horizontal" autocomplete="off" method="post" action="">
         <div class="control-group">
+            <input type="hidden" name="is_ajax" value="1" />
             <label class="control-label">
                 <i>*</i>
                 标题
@@ -174,6 +175,7 @@
         </div>
         
         <div style="clear: both;"></div>
+        <!--
         <div class="control-group">
             <label class="control-label">
                 <i>*</i>
@@ -186,7 +188,7 @@
                 <input class="input-small" type="text" name="end_time" placeholder="结束时间段" />
             </div>
         </div>
-
+        -->
         <div style="float: left;">
             <div class="control-group">
                 <label class="control-label">
@@ -273,8 +275,12 @@
             </div>
         </div>
 
-
-
+        <div class="control-group">
+            <div class="controls">
+                {{ form.hidden_tag() }}
+                <button type="submit" class="btn btn-large btn-primary">提交</button>
+            </div>
+        </div>
 
 
 
