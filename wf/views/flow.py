@@ -36,9 +36,11 @@ def flow_add_by_type(id) :
     today = str(date.today())
 
     if request.method == "POST" :
+        print session['pics']
         is_ajax = request.form['is_ajax']
         ret = {}
         if form.validate_on_submit() :
+            session['pics'] = {}
             pass
             return "11111"
         else :
@@ -61,6 +63,8 @@ def uploadFile() :
         save_path = app.config['UPLOAD_PATH'] + '/' + file_name
         data_file.save(save_path)
         
+        session['pics'][file_name] = file_name
+
         file_url = url_for('static', filename = 'upload/' + file_name)
         
         file_size = os.path.getsize(app.config['ROOT_PATH'] + '/wf' + file_url)
@@ -89,7 +93,8 @@ def deleteUpload() :
     
     if os.path.isfile(absolute_url) :
         os.remove(absolute_url)
-
+    if file_name in session['pics'] :
+        del session['pics'][file_name]
     result = {}
     result[file_name] = True
     return json.dumps(result)
