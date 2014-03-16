@@ -63,3 +63,9 @@ CREATE TABLE `messages` (
     PRIMARY KEY (`id`),
     KEY `get_msg` (`flow_id`, `create_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+#2014-03-16
+alter table flow add `subject` varchar(255) NOT NULL DEFAULT '' COMMENT '标题';
+alter table flow add `des` text;
+alter table flow change `type` `f_type` int(10) NOT NULL DEFAULT '1' COMMENT '流程类型 1为媒体测试流程 2 为媒体正式接入流程 3为媒体结算付款流程 4为合同审批流程';
+alter table flow drop department_id;

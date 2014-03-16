@@ -20,6 +20,7 @@ from datetime import date
 from formValidate.testFlowForm import testFlowForm
 import os
 import time
+import datetime
 
 mod = Blueprint('flow', __name__)
 
@@ -36,13 +37,37 @@ def flow_add_by_type(id) :
     today = str(date.today())
 
     if request.method == "POST" :
-        print session['pics']
         is_ajax = request.form['is_ajax']
-        ret = {}
         if form.validate_on_submit() :
-            session['pics'] = {}
-            pass
-            return "11111"
+            f_type = id
+            create_user_id = session["'" + app.config['SESSION_UID'] + "'"]
+            create_user = session["'" + app.config['SESSION_REAL_NAME'] + "'"]
+            department = session["'" + app.config['USER_INFO_DEPARTMENT']  + "'"]
+            phone = session["'" + app.config['USER_INFO_MOBILE']  + "'"]
+            email = session["'" + app.config['USER_INFO_EMAIL']  + "'"]
+            status = app.config['FLOW_STATUS_CREATE']
+            relation = form.data['relation_id']
+            subject = form.data['subject']
+            des = form.data['des']
+
+            detail = str(form.data)
+            
+            thisFlow = Flow(f_type = f_type, create_user_id = create_user_id, create_user = create_user, department = department, phone = phone, email = email, status = status, detail = detail, relation = relation, subject = subject, des = des)
+            db_session.add(thisFlow)
+            db_session.commit()
+
+            if 'pics' in session :
+                for item in session['pics'] :
+                    thisAttachement = Attachment(flow_id = thisFlow.id, path = str(item), create_user_id = session["'" + app.config['SESSION_UID'] + "'"])
+                    db_session.add(thisAttachement)
+                    db_session.commit()
+
+                del session['pics']
+
+            if is_ajax :
+                return flash_form(form, True, 0, '/create/log')
+            else :
+                return render_template('wf/' + temp, today = today, form = form)
         else :
             if is_ajax :
                 return flash_form(form, True, -1)
@@ -62,7 +87,10 @@ def uploadFile() :
 
         save_path = app.config['UPLOAD_PATH'] + '/' + file_name
         data_file.save(save_path)
-        
+       
+        if not 'pics' in session :
+            session['pics'] = {}
+
         session['pics'][file_name] = file_name
 
         file_url = url_for('static', filename = 'upload/' + file_name)

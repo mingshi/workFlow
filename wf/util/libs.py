@@ -8,7 +8,7 @@ FileName:   libs.py
 from flask import flash
 import json
 
-def flash_form(form, flag = False, code = 0) :
+def flash_form(form, flag = False, code = 0, redirect_uri = '') :
     message = ""
     for field, errors in form.errors.items() :
         for error in errors :
@@ -23,9 +23,17 @@ def flash_form(form, flag = False, code = 0) :
             ret = {}
             ret['code'] = code
             ret['msg'] = message
+            if redirect_uri :
+                ret['redirect_uri'] = redirect_uri
             return json.dumps(ret)
             
         flash(message, 'error')
+    else :
+        if flag == True :
+            ret = {}
+            ret['code'] = code
+            ret['msg'] = '必填项填写不完整'
+            return json.dumps(ret)
 
 def flash_error(error) :
     flash(error, 'error')

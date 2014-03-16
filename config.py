@@ -61,6 +61,17 @@ USER_INFO_URL = "http://member.adeaz.com/api/userinfo_by_username"
 SESSION_REAL_NAME = "adeazWF_realname"
 SESSION_UID = "adeazWF_uid"
 
+'''
+下面定义流程的各种状态
+'''
+FLOW_STATUS_CREATE = 0
+
+'''
+状态定义完毕
+'''
+
+
+
 class Config(object):
     HOST='0.0.0.0'
     PORT=8818
