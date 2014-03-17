@@ -95,7 +95,7 @@ APPROVAL_GOON_TEST = 6
 APPROVAL_NEW = 0
 
 STEP_NAMING = {
-    APPROVAL_OK :   u'通过',
+    APPROVAL_OK :   u'同意',
     APPROVAL_TURN : u'转签',
     APPROVAL_ADD : u'加签',
     APPROVAL_REJECT : u'驳回',

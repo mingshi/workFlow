@@ -60,15 +60,31 @@
         </label>
         <div class="controls">
             <input type="radio" name="changeapp" id="nochange" value="-1" checked />不选择
-            <input type="radio" name="changeapp" id="addapp" value="{{ config.APPROVAL_ADD }}" />加签
-            <input type="radio" name="changeapp" id="turnapp" value="{{ config.APPROVAL_TURN }}" />转签
+            <input type="radio" name="changeapp" id="addapp" value="{{ config.APPROVAL_ADD }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_ADD] }}
+            <input type="radio" name="changeapp" id="turnapp" value="{{ config.APPROVAL_TURN }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_TURN] }}
 
             <span style="margin-left: 20px;">给谁?</span>
             <input type="text" name="towho" id="towho" style="width:120px;" placeholder="姓名拼音" />
+            <span class="label label-info">注意！当选择加签或者转签时，必须填写转给谁。当不选择时，下面的审批状态必须选择</span>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <div class="controls">
+            <input type="radio" name="approval_status" id="approval_status" value="{{ config.APPROVAL_OK }}" />{{ config.STEP_NAMING[config.APPROVAL_OK] }}
+            <input type="radio" name="approval_status" id="approval_status" value="{{ config.APPROVAL_YET_OK }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_YET_OK] }}
+            <input type="radio" name="approval_status" id="approval_status" value="{{ config.APPROVAL_REJECT }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_REJECT] }}
         </div>
     </div>
 
-
+    <div class="control-group">
+        <div class="controls">
+            {{ form.hidden_tag() }}
+            <input type="hidden" name="is_ajax" value="1" />
+            <input type="hidden" name="flow_id" value="{{ flow.id }}" />
+            <button type="submit" class="btn btn-primary">提交</button>
+        </div>
+    </div>
 </form>
 <script type="text/javascript">
     $(function() {
