@@ -44,7 +44,7 @@ def login() :
                     # 获取用户的基本信息 由于多了一个http请求,需要优化
                     userInfo = get_user_info(form.data['username'])
                     userRealInfo = json.loads(userInfo)
-
+                    
                     if userRealInfo['msg'] == 'success' and userRealInfo['status'] == 'ok' :
                         session["'" + app.config['USER_INFO_MOBILE'] + "'"] = userRealInfo['info'][0]['mobile']
                         session["'" + app.config['USER_INFO_EMAIL'] + "'"] = userRealInfo['info'][0]['email']

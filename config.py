@@ -27,10 +27,12 @@ if hostname().strip('\n') in DEV_HOST :
     ENV = "Development"
     BASE_DOMAIN = "http://127.0.0.1:3999"
     UPLOAD_PATH = "/tmp/upload"
+    ATTACHEMENT_PATH = "upload"
 else :
     ENV = "Production"
     BASE_DOMAIN = ""
     UPLOAD_PATH = ""
+    ATTACHEMENT_PATH = "upload"
 
 NO_NEED_LOGIN = ["login", "static", "captcha", "favicon", "sign"]
 NO_NEED_LOG_PATH = ["/static"]
@@ -58,6 +60,8 @@ USER_INFO_DEPARTMENT = "adEazWorkFlowUserDepartment"
 USER_INFO_HIGHER = "adEazWorkFlowUserHigher"
 USER_INFO_URL = "http://member.adeaz.com/api/userinfo_by_username"
 
+MULTI_USER_INFO_URL = "http://member.adeaz.com/api/apimultiuserinfo"
+
 SESSION_REAL_NAME = "adeazWF_realname"
 SESSION_UID = "adeazWF_uid"
 
@@ -65,10 +69,35 @@ SESSION_UID = "adeazWF_uid"
 下面定义流程的各种状态
 '''
 FLOW_STATUS_CREATE = 0
+FLOW_STATUS_RUNNING = 0
+FLOW_STATUS_REJECT = 2
+FLOW_STATUS_FINISH = 3
 
+FLOW_NAMING = {
+    FLOW_STATUS_CREATE  :   u'正在进行', 
+    FLOW_STATUS_RUNNING :   u'正在进行',
+    FLOW_STATUS_REJECT  :   u'驳回',
+    FLOW_STATUS_FINISH  :   u'已结束'
+}
+
+
+#下面是审批状态
+APPROVAL_OK =   1
+APPROVAL_TURN = 2
+APPROVAL_ADD = 3
+APPROVAL_REJECT = 4
+APPROVAL_YET_OK = 5
+APPROVAL_GOON_TEST = 6
+APPROVAL_NEW = 0
 '''
 状态定义完毕
 '''
+
+PAY_TYPE = {
+        "1" : u'免费',
+        "2" : u'后付',
+        "3" : u'预付'
+        }
 
 
 

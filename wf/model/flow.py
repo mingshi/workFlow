@@ -23,6 +23,7 @@ class Flow(Model) :
     end_time        =   Column(String(19), default='0000-00-00 00:00:00')
     subject         =   Column(String(255))
     des             =   Column(Text())
+    create_time     =   Column(String(19))
 
     def __init__(self, f_type, create_user_id, create_user, department, phone, email, status, detail, relation, subject, des, end_time='0000-00-00 00:00:00') :
         self.f_type = f_type
@@ -39,4 +40,4 @@ class Flow(Model) :
         self.des = des
 
     def __repr__(self) :
-        return '<Flow %r' % (str(self.f_type) + ":" + str(self.create_user_id) + ":" + str(self.create_user) + ":" + str(self.department_id) + ":" + str(self.department) + ":" + str(self.phone) + ":" + str(self.email) + ":" + str(self.status) + ":" + str(self.detail) + ":" + str(self.relation) + ":" + str(self.end_time) + ":" + str(self.subject) + ":" + str(self.des))
+        return '<Flow %r' % (unicode(self.f_type) + ":" + unicode(self.create_user_id) + ":" + unicode(self.create_user) + ":" + unicode(self.department) + ":" + unicode(self.phone) + ":" + unicode(self.email) + ":" + unicode(self.status) + ":" + unicode(self.detail) + ":" + unicode(self.relation) + ":" + unicode(self.end_time) + ":" + unicode(self.subject) + ":" + unicode(self.des) + ":" + unicode(self.create_time))

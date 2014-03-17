@@ -70,3 +70,10 @@ alter table flow add `des` text;
 alter table flow change `type` `f_type` int(10) NOT NULL DEFAULT '1' COMMENT '流程类型 1为媒体测试流程 2 为媒体正式接入流程 3为媒体结算付款流程 4为合同审批流程';
 alter table flow drop department_id;
 alter table step add `user_from` int(11) NOT NULL DEFAULT '1' COMMENT '用户来自db还是配    件1为db,2为配置文件';
+
+#2014-03-17
+alter table step add `user_step` int(11) NOT NULL DEFAULT '0' COMMENT '记录在不同源中拿到的用户顺序';
+alter table step drop next_step_uid;
+alter table step add `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间';
+alter table flow change `status` `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0为进行中, 2为驳回, 3为结束,可能还有其他值';
+alter table step add `step_user` varchar(255) NOT NULL DEFAULT '' COMMENT '审批的用户名字';

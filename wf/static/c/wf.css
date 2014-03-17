@@ -93,3 +93,7 @@ img { border-radius: 3px; }
     font-weight: bold;
     padding-right: 5px;
 }
+
+.header {
+    background: none repeat scroll 0 0 #D4E7EC;
+}

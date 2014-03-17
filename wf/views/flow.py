@@ -21,6 +21,8 @@ from formValidate.testFlowForm import testFlowForm
 import os
 import time
 import datetime
+from wf.engine.engine import Engine
+from decimal import Decimal
 
 mod = Blueprint('flow', __name__)
 
@@ -50,8 +52,12 @@ def flow_add_by_type(id) :
             subject = form.data['subject']
             des = form.data['des']
 
-            detail = str(form.data)
+            tmp = {}
+            for item in form.data :
+                tmp[item] = unicode(form.data[item])
             
+            detail = json.dumps(tmp)
+
             thisFlow = Flow(f_type = f_type, create_user_id = create_user_id, create_user = create_user, department = department, phone = phone, email = email, status = status, detail = detail, relation = relation, subject = subject, des = des)
             db_session.add(thisFlow)
             db_session.commit()
@@ -63,6 +69,9 @@ def flow_add_by_type(id) :
                     db_session.commit()
 
                 del session['pics']
+
+            engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], thisFlow.id)
+            engine.process()
 
             if is_ajax :
                 return flash_form(form, True, 0, '/create/log')

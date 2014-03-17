@@ -135,7 +135,7 @@
                     预计采购成本
                 </label>
                 <div class="controls">
-                    <input class="input-large" type="text" name="es_cost" />
+                    <input class="input-large" type="text" name="es_cost" placeholder="纯数字,含小数" />
                 </div>
             </div>
 
@@ -145,7 +145,7 @@
                     测试成本
                 </label>
                 <div class="controls">
-                    <input class="input-large" type="text" name="test_cost" />
+                    <input class="input-large" type="text" name="test_cost" placeholder="纯数字,含小数" />
                 </div>
             </div>
 
@@ -203,9 +203,9 @@
                 </label>
                 <div class="controls">
                     <select id="pay_type" name="pay_type">
-                        <option value="1">免费</option>
-                        <option value="2">后付</option>
-                        <option value="3">预付</option>
+                        {% for item in config.PAY_TYPE %}
+                        <option value="{{ item }}">{{ config.PAY_TYPE[item] }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
@@ -218,7 +218,7 @@
                     付款总额
                 </label>
                 <div class="controls">
-                    <input class="input-large" type="text" name="pay_cost" />
+                    <input class="input-large" type="text" name="pay_cost" placeholder="纯数字,含小数" />
                 </div>
             </div>
         </div>
@@ -266,7 +266,7 @@
                     银行卡号
                 </label>
                 <div class="controls">
-                    <input class="input-xxlarge" name="card_number" type="text" />
+                    <input class="input-xxlarge" name="card_number" type="text" placeholder="纯数字,无需空格" />
                 </div>
             </div>
 

@@ -1,0 +1,284 @@
+{% extends "layout.html" %}
+
+{% block title %}审批流程 - {{ flow.subject }}{% endblock %}
+
+{% block main %}
+<div class="backMain">
+    <fieldset>
+        <legend>审批流程 - {{ flow.subject }}</legend>
+    </fieldset>
+
+    <ul class="thumbnails inline create">
+        <li>申请人: {{ flow.create_user }}</li>
+        <li>申请时间: {{ flow.create_time }}</li>
+    </ul>
+    
+    <form class="ajax form-horizontal">
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                标题
+            </label>
+            <div class="controls">
+                <input type="text" class="input-xxlarge" readonly value="{{ flow.subject|safe }}" />
+            </div>
+        </div>
+
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    媒体类别
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value="{{ flowDetail.media_type|safe }}" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    广告位置
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value="{{ flowDetail.ad_position|safe }}" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    预估效果
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value="{{ flowDetail.es_effect|safe }}" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    测试时长
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value="{{ flowDetail.test_consume|safe }}" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    客户类型
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value="{{ flowDetail.custom_type|safe }}" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    素材要求
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value="{{ flowDetail.material_require|safe }}" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    敏感地域
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value="{{ flowDetail.sensitive_area|safe }}" />
+                </div>
+            </div>
+        </div>
+
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    关联流程ID
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value={{ flow.relation|safe }} />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    投放媒体名称
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value={{ flowDetail.media_name|safe }} />
+                </div>
+            </div>
+        
+            <div class="control-group">
+                <label class="control-label">
+                    预计采购成本 
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value={{ flowDetail.es_cost|safe }} />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    测试成本
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value={{ flowDetail.test_cost|safe }} />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    禁投客户类型
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value={{ flowDetail.disable_custom_type|safe }} />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    素材尺寸
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value={{ flowDetail.material_size|safe }} />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    媒体负责人
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value={{ flowDetail.media_admin|safe }} />
+                </div>
+            </div>
+        </div>
+
+        <div style="clear: both;"></div>
+
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    付款方式
+                </label>
+                <div class="controls">
+                    <select id="pay_type" name="pay_type" readonly>
+                        <option value="{{ flowDetail.pay_type }}" selected>{{ config.PAY_TYPE[flowDetail.pay_type] }}</option>
+                    </select>
+                </div>
+            </div>  
+        </div>
+        
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    付款总额
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" readonly value="{{ flowDetail.pay_cost }}" />
+                </div>
+            </div>
+        </div>
+
+        <div style="clear: both;"></div>
+        {% if flowDetail.pay_type == "3" %}
+            <div style="float: left;">
+                <div class="control-group">
+                    <label class="control-label">
+                        <i>*</i>
+                        付款公司
+                    </label>
+                    <div class="controls">
+                        <input class="input-large" type="text" readonly value="{{ flowDetail.pay_company }}" />
+                    </div>
+                </div>
+            </div>
+
+            <div style="float: left;">
+                <div class="control-group">
+                    <label class="control-label">
+                        <i>*</i>
+                        最晚付款时间
+                    </label>
+                    <div class="controls">
+                        <input class="input-large" type="text" readonly value="{{ flowDetail.end_pay_time }}">
+                    </div>
+                </div>
+            </div>
+
+            <div style="clear: both;"></div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    媒体账户名
+                </label>
+                <div class="controls">
+                    <input class="input-xxlarge" type="text" readonly value="{{ flowDetail.media_account }}" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    银行卡号
+                </label>
+                <div class="controls">
+                    <input class="input-xxlarge" type="text" readonly value="{{ flowDetail.card_number }}" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    开户行名称
+                </label>
+                <div class="controls">
+                    <input class="input-xxlarge" type="text" readonly value="{{ flowDetail.media_bank }}" />
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if attachments %}
+        <div class="control-group">
+            <label class="control-label">
+                附件
+            </label>
+            <div class="controls">
+                <ul class="thumbnails">
+                    {% for attachment in attachments %}
+                    <li><a href="{{ url_for('static', filename=attachment) }}" target="_blank"><img style="width:120px" src="{{ url_for('static', filename=attachment) }}" /></a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="control-group">
+            <label class="control-label">
+                其他说明
+            </label>
+            <div class="controls">
+                <textarea style="width:500px; height:100px;" readonly>{{ flow.des }}</textarea>
+            </div>
+        </div>
+
+
+    </form>
+
+</div>
+{% endblock %}

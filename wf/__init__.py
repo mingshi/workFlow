@@ -34,12 +34,15 @@ from wf.db.db import db_session
 '''
 follow import views package
 '''
-from wf.views import login, captcha, index, flow
+from wf.views import login, captcha, index, flow, create, my, approval
 
 app.register_blueprint(login.mod)
 app.register_blueprint(captcha.mod)
 app.register_blueprint(index.mod)
 app.register_blueprint(flow.mod)
+app.register_blueprint(create.mod)
+app.register_blueprint(my.mod)
+app.register_blueprint(approval.mod)
 
 '''
 views import finished

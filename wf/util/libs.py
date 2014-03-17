@@ -51,3 +51,18 @@ def get_type_temp(id) :
     else :
         temp = "test.html"
     return temp
+
+def get_approval_temp(f_type) :
+    temp = ""
+    if f_type == 1 :
+        temp = "testApproval.html"
+    elif f_type == 2 :
+        temp = "connectApproval.html"
+    elif f_type == 3 :
+        temp = "payApproval.html"
+    elif f_type == 4 :
+        temp = "contractAPProval.html"
+    else :
+        temp = "testApproval.html"
+
+    return temp
