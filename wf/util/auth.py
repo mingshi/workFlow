@@ -148,3 +148,30 @@ def get_multi_user_info_by_uid(uid) :
         return res
     else :
         return res
+
+def create_search_user_sign(kwd) :
+    sign = md5.new("key=" + app.config['SEARCH_USER_SIGN'] + "&kwd=" + str(kwd).strip()).hexdigest()
+    return sign
+
+def search_user(kwd) :
+    sign = create_search_user_sign(kwd)
+    post_data_dic = {"key" : app.config["SEARCH_USER_KEY"], "sign" : sign, "kwd" : str(kwd).strip()}
+    try :
+        ch = pycurl.Curl()
+        ch.fp = StringIO.StringIO()
+        ch.setopt(pycurl.URL, app.config['SEARCH_USER_URL'])
+        ch.setopt(pycurl.AUTOREFERER, 1)
+        ch.setopt(pycurl.FOLLOWLOCATION, 1)
+        ch.setopt(pycurl.CONNECTTIMEOUT, 300)
+        ch.setopt(pycurl.TIMEOUT, 500)
+        ch.setopt(pycurl.POSTFIELDS, urllib.urlencode(post_data_dic))
+        ch.setopt(pycurl.WRITEFUNCTION, ch.fp.write)
+        ch.perform()
+
+        res = ch.fp.getvalue()
+    
+    except :
+        res = "error"
+        return res
+    else :
+        return res

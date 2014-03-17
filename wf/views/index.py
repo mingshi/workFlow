@@ -23,3 +23,12 @@ mod = Blueprint("index", __name__)
 def index() :
     return redirect('/flow/add')
     return render_template('wf/index.html')
+
+@mod.route('/getJsonUser', methods=['POST', 'GET'])
+def do_search_user() :
+    kwd = request.args.get('term').strip()
+    users = search_user(kwd)
+    
+    realUsers = json.loads(users)
+
+    return json.dumps(realUsers['info'])

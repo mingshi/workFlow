@@ -20,6 +20,7 @@ class Step(Model) :
     user_step       =   Column(Integer, default='0')
     create_time     =   Column(String(19))
     step_user       =   Column(String(255))
+    update_time     =   Column(String(19))
 
     def __init__(self, flow_id, step, step_uid, approval_status, approval_msg, user_from, user_step, step_user) :
         self.flow_id            =   flow_id
@@ -32,5 +33,5 @@ class Step(Model) :
         self.step_user          =   step_user
 
     def __repr__(self) :
-        return '<Step %r' % (unicode(self.flow_id) + ":" + unicode(self.step) + ":" + unicode(self.step_uid) + ":" + unicode(self.approval_status) + ":" + unicode(self.approval_msg) + ":" + unicode(self.user_from) + ":" + unicode(self.user_step) + ":" + unicode(self.step_user))
+        return '<Step %r' % (unicode(self.flow_id) + ":" + unicode(self.step) + ":" + unicode(self.step_uid) + ":" + unicode(self.approval_status) + ":" + unicode(self.approval_msg) + ":" + unicode(self.user_from) + ":" + unicode(self.user_step) + ":" + unicode(self.step_user) + ":" + unicode(self.update_time))
 

@@ -13,7 +13,7 @@
         <li>申请时间: {{ flow.create_time }}</li>
     </ul>
     
-    <form class="ajax form-horizontal">
+    <div class="form-horizontal">
         <div class="control-group">
             <label class="control-label">
                 <i>*</i>
@@ -273,12 +273,11 @@
                 其他说明
             </label>
             <div class="controls">
-                <textarea style="width:500px; height:100px;" readonly>{{ flow.des }}</textarea>
+                <textarea readonly>{{ flow.des }}</textarea>
             </div>
         </div>
 
-
-    </form>
-
+        {% include "wf/baseApproval.html" %}
+    </div>
 </div>
 {% endblock %}

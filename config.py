@@ -62,6 +62,10 @@ USER_INFO_URL = "http://member.adeaz.com/api/userinfo_by_username"
 
 MULTI_USER_INFO_URL = "http://member.adeaz.com/api/apimultiuserinfo"
 
+SEARCH_USER_SIGN = "7f54de2f8ef0ae3c885431acf30f2839"
+SEARCH_USER_KEY = "8cc59b4056aae8d50091ec8647127105"
+SEARCH_USER_URL = "http://member.adeaz.com/api/apisearchuser"
+
 SESSION_REAL_NAME = "adeazWF_realname"
 SESSION_UID = "adeazWF_uid"
 
@@ -89,6 +93,16 @@ APPROVAL_REJECT = 4
 APPROVAL_YET_OK = 5
 APPROVAL_GOON_TEST = 6
 APPROVAL_NEW = 0
+
+STEP_NAMING = {
+    APPROVAL_OK :   u'通过',
+    APPROVAL_TURN : u'转签',
+    APPROVAL_ADD : u'加签',
+    APPROVAL_REJECT : u'驳回',
+    APPROVAL_YET_OK : u'不同意但继续',
+    APPROVAL_GOON_TEST : u'建议继续测试',
+    APPROVAL_NEW : u'新建'
+}
 '''
 状态定义完毕
 '''
