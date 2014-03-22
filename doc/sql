@@ -77,3 +77,7 @@ alter table step drop next_step_uid;
 alter table step add `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间';
 alter table flow change `status` `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0为进行中, 2为驳回, 3为结束,可能还有其他值';
 alter table step add `step_user` varchar(255) NOT NULL DEFAULT '' COMMENT '审批的用户名字';
+
+#2014-03-22
+alter table step add `is_add_or_turn` tinyint(4) default '0' comment '是否是加签或转签';
+alter table step change `is_add_or_turn` `is_add_turn` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否是加签或转签 1为是,0为否';

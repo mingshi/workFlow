@@ -21,8 +21,9 @@ class Step(Model) :
     create_time     =   Column(String(19))
     step_user       =   Column(String(255))
     update_time     =   Column(String(19))
+    is_add_turn     =   Column(Integer, default='0')
 
-    def __init__(self, flow_id, step, step_uid, approval_status, approval_msg, user_from, user_step, step_user) :
+    def __init__(self, flow_id, step, step_uid, approval_status, approval_msg, user_from, user_step, step_user, is_add_turn = '0') :
         self.flow_id            =   flow_id
         self.step               =   step
         self.step_uid           =   step_uid
@@ -31,7 +32,8 @@ class Step(Model) :
         self.user_from          =   user_from
         self.user_step          =   user_step
         self.step_user          =   step_user
+        self.is_add_turn        =   is_add_turn
 
     def __repr__(self) :
-        return '<Step %r' % (unicode(self.flow_id) + ":" + unicode(self.step) + ":" + unicode(self.step_uid) + ":" + unicode(self.approval_status) + ":" + unicode(self.approval_msg) + ":" + unicode(self.user_from) + ":" + unicode(self.user_step) + ":" + unicode(self.step_user) + ":" + unicode(self.update_time))
+        return '<Step %r' % (unicode(self.flow_id) + ":" + unicode(self.step) + ":" + unicode(self.step_uid) + ":" + unicode(self.approval_status) + ":" + unicode(self.approval_msg) + ":" + unicode(self.user_from) + ":" + unicode(self.user_step) + ":" + unicode(self.step_user) + ":" + unicode(self.update_time) + ":" + unicode(self.is_add_turn))
 

@@ -4,6 +4,9 @@
     }
 </style>
 
+<link rel="stylesheet" href="{{ url_for('static', filename='datetimepicker/jquery.datetimepicker.css') }}" media="all" />
+<script src="{{ url_for('static', filename='datetimepicker/jquery.datetimepicker.js') }}"></script>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='autocomplete/css/jquery.ui.all.css') }}" media="all" />
 
 <script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.core.js') }}"></script>
@@ -11,7 +14,58 @@
 <script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.position.js') }}"></script>
 <script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.menu.js') }}"></script>
 <script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.autocomplete.js') }}"></script>
+<form class="ajax form-horizontal" autocomplete="off" method="post" action="/approval/1/from_config/{{ flow.id }}">
+{% if nowApproval['user_from'] == config.USER_FROM_CONFIG %}
+    {% if config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'create' %}
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                具体测试时间
+            </label>
+            <div class="controls">
+                <input id="start_date" class="input-small" type="text" name="start_date" placeholder="开始时间" />
+                <input class="input-small" type="text" name="start_time" placeholder="开始时间段" /> -
+                <input id="end_date" class="input-small" type="text" name="end_date" placeholder="结束日期" />
+                <input class="input-small" type="text" name="end_time" placeholder="结束时间段" />
+            </div>
+        </div>
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'finance' %}
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                是否已付款
+            </label>
+            <div class="controls">
+                <select id="approval_status" name="approval_status">
+                    <option value="0">请选择</option>
+                    <option value="{{ config.APPROVAL_PAYED }}">{{ config.STEP_NAMING[config.APPROVAL_PAYED] }}</option>
+                </select>
+            </div>
+        </div>
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'testadmin' %}
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'ceo' %}
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'closer' %}
+    {% endif %}
+    <div class="control-group">
+        <div class="controls">
+            {{ form.hidden_tag() }}
+            <input type="hidden" name="u_type" value="{{ config.WORK_FLOW['1']['can'][nowApproval['user_step']] }}" />
+            <input type="hidden" name="is_ajax" value="1" />
+            <button type="submit" class="btn btn-primary">提交</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+$(function() {
+    $("#start_date, #end_date").datetimepicker({
+        timepicker:false,
+        format: 'Y-m-d',
+        lang: 'ch',
+    });
+});
+</script>
 
+{% else %}
 <div class="control-group">
     <label class="control-label">
         审批记录
@@ -111,3 +165,4 @@
 
     });
 </script>
+{% endif %}

@@ -36,6 +36,8 @@ def flash_form(form, flag = False, code = 0, redirect_uri = '') :
             return json.dumps(ret)
 
 def flash_error(error) :
+    if error :
+        error = error.decode('utf-8')
     flash(error, 'error')
 
 def get_type_temp(id) :

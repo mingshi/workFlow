@@ -93,6 +93,7 @@ APPROVAL_REJECT = 4
 APPROVAL_YET_OK = 5
 APPROVAL_GOON_TEST = 6
 APPROVAL_NEW = 0
+APPROVAL_PAYED = 7
 
 STEP_NAMING = {
     APPROVAL_OK :   u'同意',
@@ -101,8 +102,17 @@ STEP_NAMING = {
     APPROVAL_REJECT : u'驳回',
     APPROVAL_YET_OK : u'不同意但继续',
     APPROVAL_GOON_TEST : u'建议继续测试',
-    APPROVAL_NEW : u'新建'
+    APPROVAL_NEW : u'新建',
+    APPROVAL_PAYED : u'已付款'
 }
+
+USER_FROM_DB = 1
+USER_FROM_CONFIG = 2
+
+MONEY_LINE = '3000'
+
+IS_ADD_TURN = 1
+
 '''
 状态定义完毕
 '''

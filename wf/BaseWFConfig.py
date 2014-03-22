@@ -11,7 +11,9 @@ FileName:   BaseWFConfig.py
 '''
 
 WORK_FLOW = {
-        '1' : { # 媒体测试流程
-                '<3000' : [1, 2, 3]
-            }
+        '1' : { 
+            'uid' : ['flow_uid', 1, 11, 1, 1],
+            'des' : ['申请者填写测试时间段', '财务付款', '测试负责人审批', 'CEO终审', '关闭'],
+            'can' : ['create', 'finance', 'testadmin', 'ceo', 'closer']
         }
+}
