@@ -14,58 +14,6 @@
 <script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.position.js') }}"></script>
 <script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.menu.js') }}"></script>
 <script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.autocomplete.js') }}"></script>
-<form class="ajax form-horizontal" autocomplete="off" method="post" action="/approval/1/from_config/{{ flow.id }}">
-{% if nowApproval['user_from'] == config.USER_FROM_CONFIG %}
-    {% if config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'create' %}
-        <div class="control-group">
-            <label class="control-label">
-                <i>*</i>
-                具体测试时间
-            </label>
-            <div class="controls">
-                <input id="start_date" class="input-small" type="text" name="start_date" placeholder="开始时间" />
-                <input class="input-small" type="text" name="start_time" placeholder="开始时间段" /> -
-                <input id="end_date" class="input-small" type="text" name="end_date" placeholder="结束日期" />
-                <input class="input-small" type="text" name="end_time" placeholder="结束时间段" />
-            </div>
-        </div>
-    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'finance' %}
-        <div class="control-group">
-            <label class="control-label">
-                <i>*</i>
-                是否已付款
-            </label>
-            <div class="controls">
-                <select id="approval_status" name="approval_status">
-                    <option value="0">请选择</option>
-                    <option value="{{ config.APPROVAL_PAYED }}">{{ config.STEP_NAMING[config.APPROVAL_PAYED] }}</option>
-                </select>
-            </div>
-        </div>
-    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'testadmin' %}
-    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'ceo' %}
-    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'closer' %}
-    {% endif %}
-    <div class="control-group">
-        <div class="controls">
-            {{ form.hidden_tag() }}
-            <input type="hidden" name="u_type" value="{{ config.WORK_FLOW['1']['can'][nowApproval['user_step']] }}" />
-            <input type="hidden" name="is_ajax" value="1" />
-            <button type="submit" class="btn btn-primary">提交</button>
-        </div>
-    </div>
-</form>
-<script type="text/javascript">
-$(function() {
-    $("#start_date, #end_date").datetimepicker({
-        timepicker:false,
-        format: 'Y-m-d',
-        lang: 'ch',
-    });
-});
-</script>
-
-{% else %}
 <div class="control-group">
     <label class="control-label">
         审批记录
@@ -74,7 +22,6 @@ $(function() {
         <button id="showlog" class="btn btn-info">{{ logsNum }}个审批</button>
     </div>
 </div>
-
 <div style="display: none;" id="logshow">
     <table class="table table-striped">
         <thead>
@@ -98,6 +45,178 @@ $(function() {
     </table>
 </div>
 
+<div class="control-group">
+    <label class="control-label">
+        测试记录
+    </label>
+    <div class="controls">
+        <button id="showTestLog" class="btn btn-info">{{ testNum }}个测试</button>
+    </div>
+</div>
+<div style="display: none;" id="testLogShow">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>测试日期</th>
+                <th>测试开始时间点</th>
+                <th>测试结束时间点</th>
+                <th>投放客户名称</th>
+                <th>成本ecpm</th>
+                <th>收入ecpm</th>
+                <th>利润率</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(0, testNum) %}
+            <tr>
+                <td>{{ flowDetail['testdetail'][i]['test_date']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_start_time']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_end_time']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_custom_name']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_cost_ecpm']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_income_ecpm']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_income_rate']|safe }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<form class="ajax form-horizontal" autocomplete="off" method="post" action="/approval/1/from_config/{{ flow.id }}">
+{% if nowApproval['user_from'] == config.USER_FROM_CONFIG %}
+    {% if config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'create' %}
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                具体测试时间
+            </label>
+            <div class="controls">
+                <input id="start_date" class="input-small" type="text" name="start_date" placeholder="开始时间" />
+                <input class="input-small" type="text" name="start_time" placeholder="开始时间段" /> -
+                <input id="end_date" class="input-small" type="text" name="end_date" placeholder="结束日期" />
+                <input class="input-small" type="text" name="end_time" placeholder="结束时间段" />
+            </div>
+        </div>
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'finance' and nowApproval.is_add_turn == 0 %}
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                指派付款人员
+            </label>
+            <div class="controls">
+                <input type="text" name="whoPay" id="whoPay" style="width:120px;" placeholder="姓名拼音" /> 
+            </div>
+        </div>
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'finance' and nowApproval.is_add_turn == 1 %}
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                是否已经付款
+            </label>
+            <div class="controls">
+                <select name="approval_status" id="approval_status">
+                    <option value="0">请选择</option>
+                    <option value="{{ config.APPROVAL_PAYED }}">{{ config.STEP_NAMING[config.APPROVAL_PAYED] }}</option>
+                </select>
+            </div>
+        </div>
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'testadmin' and nowApproval.is_add_turn == 0 %}
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                指派测试人员
+            </label>
+            <div class="controls">
+                <input type="text" name="whoTest" id="whoTest" style="width:120px;" placeholder="姓名拼音" />
+            </div>
+        </div>
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'testadmin' and nowApproval.is_add_turn == 1 %}
+        <div class="control-group">
+            <label class="control-label">
+                <i>*</i>
+                填写测试报告
+            </label>
+            <div class="controls">
+                <table class="table table-striped">  
+                    <tbody>
+                        <tr>
+                            <td><input type="text" name="test_date" id="test_date" class="input-small" placeholder="测试日期" /></td>
+                            <td><input type="text" name="test_start_time" id="test_start_time" class="input-small" placeholder="开始时间点" /></td>
+                            <td><input type="text" name="test_end_time" id="test_end_time" class="input-small" placeholder="结束时间点" /></td>
+                            <td><input type="text" name="test_custom_name" id="test_custom_name" class="input-small" placeholder="投放客户名称" /></td>
+                            <td><input type="text" name="test_cost_ecpm" id="test_cost_ecpm" class="input-small" placeholder="成本ecpm" /></td>
+                            <td><input type="text" name="test_income_ecpm" id="test_income_ecpm" class="input-small" placeholder="收入ecpm" /></td>
+                            <td><input type="text" name="test_income_rate" id="test_income_rate" class="input-small" placeholder="利润率" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="is_end_test">
+                是否结束测试
+            </label>
+            <div class="controls">
+                <input type="checkbox" value="1" name="is_end_test" id="is_end_test" />是否结束测试?
+            </div>
+        </div>
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'ceo' %}
+        <div class="control-group">
+            <label class="control-label">
+                意见
+            </label>
+            <div class="controls">
+                <textarea name="opinion" id="opinion" style="width: 500px; height: 50px;"></textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <input type="radio" name="ceo_approval_status" id="ceo_approval_status" value="{{ config.APPROVAL_OK }}" />{{ config.STEP_NAMING[config.APPROVAL_OK] }}
+                <input type="radio" name="ceo_approval_status" id="ceo_approval_status" value="{{ config.APPROVAL_GOON_TEST }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_GOON_TEST] }}
+                <input type="radio" name="ceo_approval_status" id="ceo_approval_status" value="{{ config.APPROVAL_REJECT }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_REJECT] }}
+            </div>
+        </div>
+    {% elif config.WORK_FLOW['1']['can'][nowApproval['user_step']] == 'closer' %}
+        <div class="control-group">
+            <label class="control-label">
+                是否关闭
+            </label>
+            <div class="controls">
+                <select name="is_close" id="is_close">
+                    <option value="{{ config.FLOW_STATUS_RUNNING }}">{{ config.FLOW_NAMING[config.FLOW_STATUS_RUNNING] }}</option>
+                    <option value="{{ config.FLOW_STATUS_FINISH }}">{{ config.FLOW_NAMING[config.FLOW_STATUS_FINISH] }}</option>
+                </select>
+            </div>
+        </div>
+    {% endif %}
+    <div class="control-group">
+        <div class="controls">
+            {{ form.hidden_tag() }}
+            <input type="hidden" name="cate" value="{{ nowApproval.is_add_turn }}" />
+            <input type="hidden" name="u_type" value="{{ config.WORK_FLOW['1']['can'][nowApproval['user_step']] }}" />
+            <input type="hidden" name="is_ajax" value="1" />
+            <button type="submit" class="btn btn-primary">提交</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+$(function() {
+    $("#start_date, #end_date, #test_date").datetimepicker({
+        timepicker:false,
+        format: 'Y-m-d',
+        lang: 'ch',
+    });
+    $("#test_start_time, #test_end_time").datetimepicker({
+        timepicker:true,
+        format: 'H:i',
+        lang: 'ch',
+    });
+});
+</script>
+
+{% else %}
 <form class="ajax form-horizontal" autocomplete="off" method="post" action="">
     <div class="control-group">
         <label class="control-label">
@@ -140,14 +259,19 @@ $(function() {
         </div>
     </div>
 </form>
+{% endif %}
 <script type="text/javascript">
     $(function() {
         $('#showlog').click(function() {
             $('#logshow').toggle(300);   
         });
         
+        $('#showTestLog').click(function() {
+            $('#testLogShow').toggle(300);   
+        });
+        
         var cache = {};
-            $("#towho").autocomplete({
+        $("#towho, #whoPay, #whoTest").autocomplete({
                 minLength: 2,
                 source: function(request, response) {
                 var term = request.term;
@@ -162,7 +286,5 @@ $(function() {
                 });
             }
         });
-
     });
 </script>
-{% endif %}

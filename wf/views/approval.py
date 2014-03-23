@@ -43,6 +43,8 @@ def approval_flow(f_type, id) :
     temp = get_approval_temp(f_type)
 
     flowDetail = json.loads(flow.detail)
+    
+    testNum = len(flowDetail['testdetail'])
 
     attachments = db_session.query(Attachment).filter_by(flow_id = fid).all()
 
@@ -55,7 +57,7 @@ def approval_flow(f_type, id) :
 
     logsNum = len(approval_logs)
     
-    nowApproval = db_session.query(Step).filter(Step.flow_id == fid).order_by(Step.update_time.desc()).first()
+    nowApproval = db_session.query(Step).filter(Step.flow_id == fid).order_by(Step.create_time.desc()).first()
 
     if request.method == "POST" :
         is_ajax = request.form['is_ajax']
@@ -127,9 +129,9 @@ def approval_flow(f_type, id) :
             if is_ajax :
                 return flash_form(form, True, -1)
             else :
-                return render_template('wf/' + temp, flow = flow, flowDetail = flowDetail, attachments = atts, logs = approval_logs, logsNum = logsNum, form = form, nowApproval = nowApproval)
+                return render_template('wf/' + temp, flow = flow, testNum = testNum, flowDetail = flowDetail, attachments = atts, logs = approval_logs, logsNum = logsNum, form = form, nowApproval = nowApproval)
     else :
-        return render_template('wf/' + temp, flow = flow, flowDetail = flowDetail, attachments = atts, logs = approval_logs, logsNum = logsNum, form = form, nowApproval = nowApproval)
+        return render_template('wf/' + temp, flow = flow, flowDetail = flowDetail, testNum = testNum, attachments = atts, logs = approval_logs, logsNum = logsNum, form = form, nowApproval = nowApproval)
 
 
 @mod.route('/approval/<f_type>/from_config/<fid>', methods=['POST'])
@@ -158,10 +160,133 @@ def approval_by_config(f_type, fid) :
                 flow.detail = detail
 
                 db_session.commit()
+                
+                engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                engine.process()
 
-            engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
-            engine.process()
+            if form.data['u_type'] == 'finance' and form.data['cate'] == 0 :
+                nowStep = db_session.query(Step).filter_by(flow_id = fid).order_by(Step.create_time.desc()).first()
+                
+                nowStep.approval_status = app.config['APPROVAL_OK']
+                nowStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+                db_session.commit() 
+                
+                step_uid = form.data['whoPay'].split(' ')[0]
+                step_user = form.data['whoPay'].split(' ')[1]
+                step = nowStep.step + 1
+                approval_status = app.config['APPROVAL_NEW']
+                approval_msg = ''
+                user_from = app.config['USER_FROM_CONFIG']
+                user_step = nowStep.user_step
+                is_add_turn = app.config['IS_ADD_TURN']
+
+                thisStep = Step(flow_id = fid, step = step, step_uid = step_uid, approval_status = approval_status, approval_msg = approval_msg, user_from = user_from, user_step = user_step, step_user = step_user, is_add_turn = is_add_turn)
+                db_session.add(thisStep)
+                db_session.commit()
             
+            if form.data['u_type'] == 'finance' and form.data['cate'] == 1 :
+                nowStep = db_session.query(Step).filter_by(flow_id = fid).order_by(Step.create_time.desc()).first()
+                nowStep.approval_status = form.data['approval_status']
+                nowStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+                db_session.commit()
+
+                engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                engine.process()
+
+            if form.data['u_type'] == 'testadmin' and form.data['cate'] == 0 :
+                nowStep = db_session.query(Step).filter_by(flow_id = fid).order_by(Step.create_time.desc()).first()
+                nowStep.approval_status = app.config['APPROVAL_OK']
+                nowStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+                db_session.commit()
+
+                step_uid = form.data['whoTest'].split(' ')[0]
+                step_user = form.data['whoTest'].split(' ')[1]
+                step = nowStep.step + 1
+                approval_status = app.config['APPROVAL_NEW']
+                approval_msg = ''
+                user_from = app.config['USER_FROM_CONFIG']
+                user_step = nowStep.user_step
+                is_add_turn = app.config['IS_ADD_TURN']
+
+                thisStep = Step(flow_id = fid, step = step, step_uid = step_uid, approval_status = approval_status, approval_msg = approval_msg, user_from = user_from, user_step = user_step, step_user = step_user, is_add_turn = is_add_turn)
+                db_session.add(thisStep)
+                db_session.commit()
+            
+            if form.data['u_type'] == 'testadmin' and form.data['cate'] == 1 :
+                flow = db_session.query(Flow).filter_by(id = fid).first()
+                if form.data['is_end_test'] == 1 :
+                    engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                    engine.process()
+                
+                detail = json.loads(flow.detail)
+                if not 'testdetail' in detail :
+                    detail['testdetail'] = []
+
+                tmpTest = {}
+                tmpTest['test_date'] = str(form.data['test_date']).strip()
+                tmpTest['test_start_time'] = str(form.data['test_start_time']).strip()
+                tmpTest['test_end_time'] = str(form.data['test_end_time']).strip()
+                tmpTest['test_custom_name'] = str(form.data['test_custom_name']).strip()
+                tmpTest['test_cost_ecpm'] = str(form.data['test_cost_ecpm']).strip()
+                tmpTest['test_income_ecpm'] = str(form.data['test_income_ecpm']).strip()
+                tmpTest['test_income_rate'] = str(form.data['test_income_rate']).strip()
+                
+                if tmpTest['test_date'] and tmpTest['test_start_time'] and tmpTest['test_end_time'] and tmpTest['test_custom_name'] and tmpTest['test_cost_ecpm'] and tmpTest['test_income_ecpm'] and tmpTest['test_income_rate'] :
+                    detail['testdetail'].append(tmpTest)
+                    detail = json.dumps(detail)
+                    flow.detail = detail
+                    db_session.commit()
+
+            if form.data['u_type'] == 'ceo' :
+                if form.data['ceo_approval_status'] == app.config['APPROVAL_OK'] :
+                    engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                    engine.process()
+                elif form.data['ceo_approval_status'] == app.config['APPROVAL_GOON_TEST'] :
+                    akey = app.config['WORK_FLOW']['1']['can'].index('testadmin')
+                    nowStep = db_session.query(Step).filter_by(flow_id = fid).order_by(Step.create_time.desc()).first()
+                    nowStep.approval_status = form.data['ceo_approval_status']
+                    nowStep.approval_msg = form.data['opinion']
+                    nowStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+
+                    db_session.commit()
+
+                    step_uid = app.config['WORK_FLOW']['1']['uid'][akey]
+                    stepUser = get_multi_user_info_by_uid(step_uid)
+                    tmpInfo = json.loads(stepUser)
+                    step_user = tmpInfo['info'][0]['realname']
+                    user_from = app.config['USER_FROM_CONFIG']
+                    user_step = akey
+                    approval_status = app.config['APPROVAL_NEW']
+                    approval_msg = ''
+                    is_add_turn = app.config['IS_ADD_TURN']
+                    step = nowStep.step + 1
+
+                    thisStep = Step(flow_id = fid, step = step, step_uid = step_uid, approval_status = approval_status, approval_msg = approval_msg, user_from = user_from, user_step = user_step, step_user = step_user, is_add_turn = is_add_turn)
+                    db_session.add(thisStep)
+                    db_session.commit()
+                elif form.data['ceo_approval_status'] == app.config['APPROVAL_REJECT'] :
+                    nowStep = db_session.query(Step).filter_by(flow_id = fid).order_by(Step.create_time.desc()).first()
+                    nowStep.approval_status = form.data['ceo_approval_status']
+                    nowStep.approval_msg = form.data['opinion']
+                    nowStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+
+                    db_session.commit()
+                    
+                    flow =  db_session.query(Flow).filter_by(id = fid).first()
+                    flow.status = app.config['FLOW_STATUS_REJECT']
+                    db_session.commit()
+
+            if form.data['u_type'] == 'closer' :
+                nowStep = db_session.query(Step).filter_by(flow_id = fid).order_by(Step.create_time.desc()).first()
+                nowStep.approval_status = form.data['is_close']
+                nowStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+
+                db_session.commit()
+
+                flow =  db_session.query(Flow).filter_by(id = fid).first()
+                flow.status = form.data['is_close']
+                db_session.commit()
+
             if is_ajax :
                 return flash_form(form, True, 0, '/approval/log')
             else :

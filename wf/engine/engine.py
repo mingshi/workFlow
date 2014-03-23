@@ -35,26 +35,27 @@ class Engine :
             lastApproval = db_session.query(Step).filter(and_(Step.approval_status.in_(activeStatus), Step.flow_id == self.fid, Step.is_add_turn != app.config['IS_ADD_TURN'])).order_by(Step.create_time.desc()).first()
             if lastApproval :
                 #检查是否已经在config文件读取
-                tmpApproval = db_session.query(Step).filter(Step.user_from == app.config['USER_FROM_CONFIG']).order_by(Step.update_time.desc()).first()
-
+                tmpApproval = db_session.query(Step).filter(Step.user_from == app.config['USER_FROM_CONFIG']).order_by(Step.create_time.desc()).first()
+                
                 if tmpApproval :
                     nextKey = tmpApproval.user_step + 1
                     step = tmpApproval.step + 1
                     step_uid = app.config['WORK_FLOW']['1']['uid'][nextKey]
+                    approval_msg = ''
                     if not app.config['WORK_FLOW']['1']['can'][nextKey] == 'ceo' :
                         approval_status = app.config['APPROVAL_NEW']
                         approval_msg = ''
                     else :
                         #回头改
                         approval_status = app.config['APPROVAL_NEW']
-                    
-                    if request.form['approval_status'] :
+                   
+                    if 'approval_status' in request.form :
                         tmpApproval.approval_status = request.form['approval_status']
                     else :
                         tmpApproval.approval_status = app.config['APPROVAL_OK']
                     tmpApproval.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
                     db_session.commit()
-
+                    
                     user_from = app.config['USER_FROM_CONFIG']
                     user_step = nextKey
                     stepUser = get_multi_user_info_by_uid(step_uid)
