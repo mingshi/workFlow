@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}我的审批记录{% endblock %}
+
+{% block main %}
+<div class="backMain">
+    <fieldset>
+        <legend>我的审批记录</legend>
+    </fieldset>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr style="cursor: pointer;">
+                <th class="header">流程ID</th>
+                <th class="header">标题</th>
+                <th class="header">发起时间</th>
+                <th class="header">发起人</th>
+                <th class="header">审批状态</th>
+                <th class="header">审批时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for res in results %}
+            <tr>
+                <td>{{ res.fid }}</td>
+                <td>{{ res.subject }}</td>
+                <td>{{ res.create_time }}</td>
+                <td>{{ res.create_user }}</td>
+                <td>{{ res.step_status }}</td>
+                <td>{{ res.step_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

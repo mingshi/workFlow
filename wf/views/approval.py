@@ -296,3 +296,23 @@ def approval_by_config(f_type, fid) :
                 return flash_form(form, True, -1)
             else :
                 return redirect('/approval/' + f_type + '/from_config/' + fid)
+
+
+@mod.route('/approval/log', methods=['GET'])
+def approval_log() :
+    uid = session["'" + app.config['SESSION_UID'] + "'"]
+    approvals = db_session.query(Step).filter_by(step_uid = uid).order_by(Step.update_time.desc()).all()
+
+    result = []
+    for step in approvals :
+        tmp = {}
+        tmpFlow = db_session.query(Flow).filter_by(id = step.flow_id).first()
+        tmp['fid'] = tmpFlow.id
+        tmp['subject'] = tmpFlow.subject
+        tmp['create_time'] = tmpFlow.create_time
+        tmp['create_user'] = tmpFlow.create_user
+        tmp['step_status'] = app.config['STEP_NAMING'][step.approval_status]
+        tmp['step_time'] = step.update_time
+        result.append(tmp)
+
+    return render_template('wf/approval_log.html', results = result)
