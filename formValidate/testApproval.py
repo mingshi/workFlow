@@ -12,12 +12,12 @@ from flask import session, flash
 from wf import app
 
 class testApproval(Form) :
-    u_type              =   TextField(u'配置文件用户类型', validators=[DataRequired('配置文件用户类型是必须的')])
+    u_type              =   TextField(u'配置文件用户类型', validators=[Optional(), DataRequired('配置文件用户类型是必须的')])
     start_date          =   DateField(u'测试开始日期', validators=[Optional(), DataRequired('测试开始日期格式不对')])
     start_time          =   TextField(u'测试开始时间段', validators=[Optional(), DataRequired('测试开始时间段是必须的')])  
     end_date            =   DateField(u'测试结束日期', validators=[Optional(), DataRequired('测试结束日期格式不对')])
     end_time            =   TextField(u'测试结束时间段', validators=[Optional(), DataRequired('测试结束时间段是必须的')])
-    approval_status     =   SelectField(u'是否已付款', choices=[('0', u'请选择'), ('7', '已付款')], validators=[Optional(), DataRequired('是否付款必须选择')])
+    finance_approval_status     =   SelectField(u'是否已付款', choices=[('0', u'请选择'), ('7', '已付款')], validators=[Optional(), DataRequired('是否付款必须选择')])
     whoPay              =   TextField(u'指派谁去付款', validators=[Optional(), DataRequired('指派谁去付款必须填写')])
     whoTest             =   TextField(u'指派谁去测试', validators=[Optional(), DataRequired('指派谁去测试必须填写')])
     cate                =   IntegerField(u'相同类别的分类', validators=[NumberRange(min=0, max=1)])
@@ -33,6 +33,7 @@ class testApproval(Form) :
     ceo_approval_status =   IntegerField(u'审批状态', validators=[Optional(), DataRequired('审批状态必须选择')])
     #ceo_approval_status =   SelectField(u'审批状态', choices=[('1', u'同意'), ('6', u'建议继续测试'), ('4', u'驳回')], validators=[Optional(), DataRequired('审批状态必须选择')])
     is_close            =   IntegerField(u'是否关闭', validators=[Optional()])
+    approval_status     =   IntegerField(u'审批状态', validators=[Optional(), DataRequired('审批状态是必须的')])
 
     def __init__(self, *args, **kwargs) :
         Form.__init__(self, *args, **kwargs)

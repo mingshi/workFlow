@@ -303,135 +303,12 @@
         <div class="control-group">
             <div class="controls">
                 {{ form.hidden_tag() }}
+                <input type="hidden" name="is_ajax" value="1" />
                 <button type="submit" class="btn btn-large btn-primary">提交</button>
             </div>
         </div>
     </form>
-
-    <div id="myUpload" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myUploadLabel">上传附件</h3>
-        </div>
-        <form id="fileupload" action="/flow/uploadFile" method="POST" enctype="multipart/form-data">
-            <div class="modal-body">
-                <div class="row fileupload-buttonbar">
-                    <div class="col-lg-7">
-                        <span class="btn btn-success fileinput-button" style="margin-left: 30px;">
-                            <i class="glyphicon glyphicon-plus"></i>
-                            <span>添加文件</span>
-                            <input type="file" name="files[]" multiple>
-                        </span>
-
-                        <button type="submit" class="btn btn-primary start">
-                            <i class="glyphicon glyphicon-upload"></i>
-                            <span>开始上传</span>
-                        </button>
-
-                        <button type="reset" class="btn btn-warning cancel">
-                            <i class="glyphicon glyphicon-ban-circle"></i>
-                            <span>取消上传</span>
-                        </button>
-
-                        <button type="button" class="btn btn-danger delete">
-                            <i class="glyphicon glyphicon-trash"></i>
-                            <span>Delete</span>
-                        </button>
-                        <input type="checkbox" class="toggle">
-                        <span class="fileupload-process"></span>
-                    </div>
-
-                    <div class="col-lg-5 fileupload-progress fade">
-                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar progress-bar-success" style="width:0%;"></div>
-                        </div>
-                        <div class="progress-extended">&nbsp;</div>
-                    </div>
-                </div>
-                <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table> 
-            </div>
-            {% raw %}
-                <script id="template-upload" type="text/x-tmpl">
-                {% for (var i=0, file; file=o.files[i]; i++) { %}
-                    <tr class="template-upload fade">
-                        <td>
-                            <span class="preview"></span>
-                        </td>
-                        <td>
-                            <p class="name">{%=file.name%}</p>
-                            <strong class="error text-danger"></strong>
-                        </td>
-                        <td>
-                            <p class="size">Processing...</p>
-                            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
-                        </td>
-                        <td>
-                            {% if (!i && !o.options.autoUpload) { %}
-                                <button class="btn btn-primary start" disabled>
-                                    <i class="glyphicon glyphicon-upload"></i>
-                                    <span>Start</span>
-                                </button>
-                            {% } %}
-                            {% if (!i) { %}
-                                <button class="btn btn-warning cancel">
-                                    <i class="glyphicon glyphicon-ban-circle"></i>
-                                    <span>Cancel</span>
-                                </button>
-                            {% } %}
-                        </td>
-                    </tr>
-                {% } %}
-                </script>
-
-                <script id="template-download" type="text/x-tmpl">
-                {% for (var i=0, file; file=o.files[i]; i++) { %}
-                    <tr class="template-download fade">
-                        <td>
-                            <span class="preview">
-                                {% if (file.thumbnailUrl) { %}
-                                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img style="width: 50px;" src="{%=file.thumbnailUrl%}">
-                                </a>
-                                {% } %}
-                            </span>
-                        </td>
-                        <td>
-                            <p class="name">
-                                {% if (file.url) { %}
-                                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
-                                {% } else { %}
-                                    <span>{%=file.name%}</span>
-                                {% } %}
-                            </p>
-                            {% if (file.error) { %}
-                                <div><span class="label label-danger">Error</span> {%=file.error%}</div>
-                            {% } %}
-                        </td>
-                        <td>
-                            <span class="size">{%=o.formatFileSize(file.size)%}</span>
-                        </td>
-                        <td>
-                            {% if (file.deleteUrl) { %}
-                                <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
-                                    <i class="glyphicon glyphicon-trash"></i>
-                                    <span>Delete</span>
-                                </button>
-                                <input type="checkbox" name="delete" value="1" class="toggle">
-                            {% } else { %}
-                                <button class="btn btn-warning cancel">
-                                    <i class="glyphicon glyphicon-ban-circle"></i>
-                                    <span>Cancel</span>
-                                </button>
-                            {% } %}
-                        </td>
-                    </tr>
-                {% } %}
-                </script>
-            {% endraw %}
-            <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-            </div>
-        </form>
-    </div>
+    {% include "wf/myUpload.html" %}
 </div>
 {% endblock %}
 
@@ -456,36 +333,7 @@ $(function() {
         }
     });
     
-    $('#fileupload').fileupload({
-        url : '/flow/uploadFile',
-        maxFileSize: 5000000,
-        sequentialUploads: true
-    });
-
-    var fileNum = parseInt(0);
-    $('#fileupload').bind('fileuploaddone', function(e, data) {
-        fileNum = fileNum + parseInt(1);
-        $('#filenum').html(fileNum + "个文件");
-    });
-
-    $('#fileupload').bind('fileuploaddestroy', function(e, data) {
-        fileNum = fileNum - parseInt(1);
-        $('#filenum').html(fileNum + "个文件");
-    });
 });
 </script>
 
-<script src="{{ url_for('static', filename='blueimpUpload/js/vendor/jquery.ui.widget.js') }}"></script>
-<script src="{{ url_for('static', filename='blueimpUpload/js/tmpl.min.js') }}"></script>
-<script src="{{ url_for('static', filename='blueimpUpload/js/load-image.min.js') }}"></script>
-<script src="{{ url_for('static', filename='blueimpUpload/js/jquery.iframe-transport.js') }}"></script>
-<script src="{{ url_for('static', filename='blueimpUpload/js/jquery.fileupload.js') }}"></script>
-<script src="{{ url_for('static', filename='blueimpUpload/js/cors/jquery.xdr-transport.js') }}"></script>
-
-<script src="{{ url_for('static', filename='blueimpUpload/js/jquery.fileupload-process.js') }}"></script>
-<script src="{{ url_for('static', filename='blueimpUpload/js/jquery.fileupload-image.js') }}"></script>
-
-<script src="{{ url_for('static', filename='blueimpUpload/js/jquery.fileupload-image.js') }}"></script>
-<script src="{{ url_for('static', filename='blueimpUpload/js/jquery.fileupload-validate.js') }}"></script>
-<script src="{{ url_for('static', filename='blueimpUpload/js/jquery.fileupload-ui.js') }}"></script>
 {% endblock %}

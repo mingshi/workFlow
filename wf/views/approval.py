@@ -44,7 +44,9 @@ def approval_flow(f_type, id) :
 
     flowDetail = json.loads(flow.detail)
     
-    testNum = len(flowDetail['testdetail'])
+    testNum = 0
+    if 'testDetail' in flowDetail :
+        testNum = len(flowDetail['testdetail'])
 
     attachments = db_session.query(Attachment).filter_by(flow_id = fid).all()
 
@@ -58,6 +60,9 @@ def approval_flow(f_type, id) :
     logsNum = len(approval_logs)
     
     nowApproval = db_session.query(Step).filter(Step.flow_id == fid).order_by(Step.create_time.desc()).first()
+    
+    if not nowApproval.step_uid == session["'" + app.config['SESSION_UID'] + "'"] :
+        return redirect('/403')
 
     if request.method == "POST" :
         is_ajax = request.form['is_ajax']
@@ -186,7 +191,7 @@ def approval_by_config(f_type, fid) :
             
             if form.data['u_type'] == 'finance' and form.data['cate'] == 1 :
                 nowStep = db_session.query(Step).filter_by(flow_id = fid).order_by(Step.create_time.desc()).first()
-                nowStep.approval_status = form.data['approval_status']
+                nowStep.approval_status = form.data['finance_approval_status']
                 nowStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
                 db_session.commit()
 
@@ -313,6 +318,7 @@ def approval_log() :
         tmp['create_user'] = tmpFlow.create_user
         tmp['step_status'] = app.config['STEP_NAMING'][step.approval_status]
         tmp['step_time'] = step.update_time
+        tmp['f_type'] = tmpFlow.f_type
         result.append(tmp)
 
     return render_template('wf/approval_log.html', results = result)

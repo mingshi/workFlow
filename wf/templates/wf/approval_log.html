@@ -22,7 +22,7 @@
             {% for res in results %}
             <tr>
                 <td>{{ res.fid }}</td>
-                <td>{{ res.subject }}</td>
+                <td><a href="/flow/detail/{{ res.f_type }}/{{ res.fid }}">{{ res.subject }}</td>
                 <td>{{ res.create_time }}</td>
                 <td>{{ res.create_user }}</td>
                 <td>{{ res.step_status }}</td>

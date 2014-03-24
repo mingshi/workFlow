@@ -1,0 +1,81 @@
+<div class="control-group">
+    <label class="control-label">
+        审批记录
+    </label>
+    <div class="controls">
+        <button id="showlog" type="button" class="btn btn-info">{{ logsNum }}个审批</button>
+    </div>
+</div>
+<div style="display: none;" id="logshow">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>审批人</th>
+                <th>审批信息</th>
+                <th>审批状态</th>
+                <th>审批时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.step_user }}</td>
+                <td>{{ log.approval_msg }}</td>
+                <td>{{ config.STEP_NAMING[log.approval_status] }}</td>
+                <td>{{ log.update_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not flow.create_user_id == session["'" + config.SESSION_UID + "'"] %}
+<div class="control-group">
+    <label class="control-label">
+        测试记录
+    </label>
+    <div class="controls">
+        <button type="button" id="showTestLog" class="btn btn-info">{{ testNum }}个测试</button>
+    </div>
+</div>
+<div style="display: none;" id="testLogShow">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>测试日期</th>
+                <th>测试开始时间点</th>
+                <th>测试结束时间点</th>
+                <th>投放客户名称</th>
+                <th>成本ecpm</th>
+                <th>收入ecpm</th>
+                <th>利润率</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(0, testNum) %}
+            <tr>
+                <td>{{ flowDetail['testdetail'][i]['test_date']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_start_time']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_end_time']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_custom_name']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_cost_ecpm']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_income_ecpm']|safe }}</td>
+                <td>{{ flowDetail['testdetail'][i]['test_income_rate']|safe }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+<script type="text/javascript">
+    $(function() {
+        $('#showlog').click(function() {
+            $('#logshow').toggle(300);
+        });
+
+        $('#showTestLog').click(function() {
+            $('#testLogShow').toggle(300);
+        });
+
+    });
+</script>

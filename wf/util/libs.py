@@ -68,3 +68,17 @@ def get_approval_temp(f_type) :
         temp = "testApproval.html"
 
     return temp
+
+def get_detail_temp(f_type) :
+    temp = ""
+    if f_type == 1 :
+        temp = 'testDetail.html'
+    elif f_type == 2 :
+        temp = 'connectDetail.html'
+    elif f_type == 3 :
+        temp = 'payDetail.html'
+    elif f_type == 4 :
+        temp = 'contractDetail.html'
+    else :
+        temp = 'testDetail.html'
+    return temp

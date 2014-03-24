@@ -30,14 +30,14 @@ class Engine :
 
     def process(self) :
         # 先到step表查看是否存在
-        activeStatus = [app.config['APPROVAL_OK'], app.config['APPROVAL_YET_OK']]
+        activeStatus = [app.config['APPROVAL_OK'], app.config['APPROVAL_YET_OK'], app.config['APPROVAL_TURN']]
         if self.f_type == 1 :
             lastApproval = db_session.query(Step).filter(and_(Step.approval_status.in_(activeStatus), Step.flow_id == self.fid, Step.is_add_turn != app.config['IS_ADD_TURN'])).order_by(Step.create_time.desc()).first()
             if lastApproval :
                 #检查是否已经在config文件读取
-                tmpApproval = db_session.query(Step).filter(Step.user_from == app.config['USER_FROM_CONFIG']).order_by(Step.create_time.desc()).first()
+                tmpApproval = db_session.query(Step).filter(Step.flow_id == self.fid).order_by(Step.create_time.desc()).first()
                 
-                if tmpApproval :
+                if tmpApproval.user_from == app.config['USER_FROM_CONFIG'] :
                     nextKey = tmpApproval.user_step + 1
                     step = tmpApproval.step + 1
                     step_uid = app.config['WORK_FLOW']['1']['uid'][nextKey]
@@ -68,6 +68,8 @@ class Engine :
 
                 else :
                     lastUid = lastApproval.step_uid
+                    
+                    # 检查上一个是不是加签或者转签
                     step = lastApproval.step + 1
                     approval_status = app.config['APPROVAL_NEW']
                     user_from = app.config['USER_FROM_DB']
