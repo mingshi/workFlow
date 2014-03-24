@@ -115,9 +115,20 @@ MONEY_LINE = '3000'
 
 IS_ADD_TURN = 1
 
+IS_PASS = 1
+NO_PASS = 0
+
+CONTRACT_PASS_NAMING = {
+    IS_PASS : u'通过',
+    NO_PASS : u'未通过'
+}
+
+
 '''
 状态定义完毕
 '''
+
+ACCOUNT_TIME = [30, 45, 60, 75, 90]
 
 PAY_TYPE = {
         "1" : u'免费',

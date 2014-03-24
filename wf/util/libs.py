@@ -17,7 +17,7 @@ def flash_form(form, flag = False, code = 0, redirect_uri = '') :
     
     if not message and code == 0 and flag == True:
         message = u'保存成功'
-
+    
     if message :
         if flag == True :
             ret = {}

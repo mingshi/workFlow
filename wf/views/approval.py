@@ -39,9 +39,9 @@ def approval_flow(f_type, id) :
     if not flow :
         flash_error('没有该流程')
         return redirect('/flow/add')
-
-    temp = get_approval_temp(f_type)
-
+    
+    temp = get_approval_temp(fType)
+    
     flowDetail = json.loads(flow.detail)
     
     testNum = 0
@@ -121,7 +121,7 @@ def approval_flow(f_type, id) :
 
                 db_session.commit()
 
-                engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], thisStep.flow_id)
+                engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], thisStep.flow_id)
                 engine.process()
 
                 if is_ajax :
@@ -166,7 +166,7 @@ def approval_by_config(f_type, fid) :
 
                 db_session.commit()
                 
-                engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
                 engine.process()
 
             if form.data['u_type'] == 'finance' and form.data['cate'] == 0 :
@@ -195,7 +195,7 @@ def approval_by_config(f_type, fid) :
                 nowStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
                 db_session.commit()
 
-                engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
                 engine.process()
 
             if form.data['u_type'] == 'testadmin' and form.data['cate'] == 0 :
@@ -220,7 +220,7 @@ def approval_by_config(f_type, fid) :
             if form.data['u_type'] == 'testadmin' and form.data['cate'] == 1 :
                 flow = db_session.query(Flow).filter_by(id = fid).first()
                 if form.data['is_end_test'] == 1 :
-                    engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                    engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
                     engine.process()
                 
                 detail = json.loads(flow.detail)
@@ -244,7 +244,7 @@ def approval_by_config(f_type, fid) :
 
             if form.data['u_type'] == 'ceo' :
                 if form.data['ceo_approval_status'] == app.config['APPROVAL_OK'] :
-                    engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                    engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
                     engine.process()
                 elif form.data['ceo_approval_status'] == app.config['APPROVAL_GOON_TEST'] :
                     akey = app.config['WORK_FLOW']['1']['can'].index('testadmin')

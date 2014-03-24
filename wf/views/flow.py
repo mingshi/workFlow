@@ -18,6 +18,7 @@ import math
 from wf.util.libs import *
 from datetime import date
 from formValidate.testFlowForm import testFlowForm
+from formValidate.connectFlowForm import connectFlowForm
 import os
 import time
 import datetime
@@ -32,8 +33,11 @@ def flow_add() :
 
 @mod.route('/flow/add/<id>', methods=['GET', 'POST'])
 def flow_add_by_type(id) :
-    form = testFlowForm()
     id = int(id)
+    if id == 1 :
+        form = testFlowForm()
+    elif id == 2 :
+        form = connectFlowForm()
     
     temp = get_type_temp(id)
     today = str(date.today())
@@ -70,7 +74,7 @@ def flow_add_by_type(id) :
 
                 del session['pics']
 
-            engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], thisFlow.id)
+            engine = Engine(id, session["'" + app.config['USER_INFO_HIGHER'] + "'"], thisFlow.id)
             engine.process()
 
             if is_ajax :

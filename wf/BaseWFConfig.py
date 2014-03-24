@@ -15,5 +15,11 @@ WORK_FLOW = {
             'uid' : ['flow_uid', 1, 11, 1, 1],
             'des' : ['申请者填写测试时间段', '财务付款', '测试负责人审批', 'CEO终审', '关闭'],
             'can' : ['create', 'finance', 'testadmin', 'ceo', 'closer']
+        },
+
+        '2' : {
+            'uid' : [1, 11, 1, 1],
+            'des' : ['财务审核', '流量运营专员', '合同管理专员', '关闭'],
+            'can' : ['finance', 'trafficadmin', 'contractadmin', 'closer']
         }
 }
