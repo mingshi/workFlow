@@ -23,6 +23,12 @@ WORK_FLOW = {
             'can' : ['finance', 'trafficadmin', 'contractadmin', 'closer']
         },
 
+        '3' : {
+            'uid' : [11, 18, 1, 18],
+            'des' : ['运营数据', '财务审核', 'CEO审核', '财务付款', '关闭'],
+            'can' : ['traffic', 'finance', 'ceo', 'finance', 'closer']
+        },
+
         '4' : {
             'uid' : [11, 1, 18, 1],
             'des' : ['财务审核', 'ceo审核', '合同专员审核', '关闭'],

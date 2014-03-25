@@ -119,8 +119,8 @@ IS_PASS = 1
 NO_PASS = 0
 
 CONTRACT_PASS_NAMING = {
-    IS_PASS : u'通过',
-    NO_PASS : u'未通过'
+    IS_PASS: u'通过',
+    NO_PASS: u'未通过'
 }
 
 

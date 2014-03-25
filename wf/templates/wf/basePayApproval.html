@@ -1,0 +1,221 @@
+<style type="text/css">
+    .ui-autocomplete-loading {
+        background: white url('/static/autocomplete/ui-anim_basic_16x16.gif') right center no-repeat;
+    }
+</style>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='datetimepicker/jquery.datetimepicker.css') }}" media="all" />
+<script src="{{ url_for('static', filename='datetimepicker/jquery.datetimepicker.js') }}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='autocomplete/css/jquery.ui.all.css') }}" media="all" />
+
+<script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.core.js') }}"></script>
+<script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.widget.js') }}"></script>
+<script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.position.js') }}"></script>
+<script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.menu.js') }}"></script>
+<script src="{{ url_for('static', filename='autocomplete/js/jquery.ui.autocomplete.js') }}"></script>
+
+<div class="control-group">
+    <label class="control-label">
+        审批记录
+    </label>
+    <div class="controls">
+        <button id="showlog" class="btn btn-info">{{ logsNum }}个审批</button>
+    </div>
+</div>
+<div style="display: none;" id="logshow">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>审批人</th>
+                <th>审批信息</th>
+                <th>审批状态</th>
+                <th>审批时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.step_user }}</td>
+                <td>{{ log.approval_msg }}</td>
+                <td>{{ config.STEP_NAMING[log.approval_status] }}</td>
+                <td>{{ log.update_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="control-group">
+    <label class="control-label">
+        运营数据
+    </label>
+    <div class="controls">
+        <button id="showTestLog" class="btn btn-info">{{ operationNum }}个运营数据</button>
+    </div>
+</div>
+<div style="display: none;" id="testLogShow">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>客户名称</th>
+                <th>PV</th>
+                <th>收入</th>
+                <th>成本</th>
+                <th>利润</th>
+                <th>利润率</th>
+                <th>回款情况</th>
+                <th>备注</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(0, operationNum) %}
+            <tr>
+                <td>{{ flowDetail['operation'][i]['start_time']|safe }}</td>
+                <td>{{ flowDetail['operation'][i]['end_time']|safe }}</td>
+                <td>{{ flowDetail['operation'][i]['custom_name']|safe }}</td>
+                <td>{{ flowDetail['operation'][i]['pv']|safe }}</td>
+                <td>{{ flowDetail['operation'][i]['income']|safe }}</td>
+                <td>{{ flowDetail['operation'][i]['cost']|safe }}</td>
+                <td>{{ flowDetail['operation'][i]['real_income']|safe }}</td>
+                <td>{{ flowDetail['operation'][i]['income_rate']|safe }}</td>
+                <td>{{ flowDetail['operation'][i]['back_info']|safe }}</td>
+                <td>{{ flowDetail['operation'][i]['pay_des']|safe }}</td>
+                <td><a href="/flow/deloperation/{{ flow.f_type }}/{{ flow.id }}/{{ i }}">删除</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<form class="ajax form-horizontal" autocomplete="off" method="post" action="">
+    {% if nowApproval.user_from == config.USER_FROM_CONFIG and config.WORK_FLOW['3']['can'][nowApproval['user_step']] == 'closer' %}
+    <div class="control-group">
+        <label class="control-label">
+            是否关闭
+        </label>
+        <div class="controls">
+            <select name="is_close" id="is_close">
+                <option value="{{ config.FLOW_STATUS_RUNNING }}">{{ config.FLOW_NAMING[config.FLOW_STATUS_RUNNING] }}</option>
+                <option value="{{ config.FLOW_STATUS_FINISH }}">{{ config.FLOW_NAMING[config.FLOW_STATUS_FINISH] }}</option>
+            </select>
+        </div>
+    </div>
+    {% elif nowApproval.user_from == config.USER_FROM_CONFIG and config.WORK_FLOW['3']['can'][nowApproval['user_step']] == 'traffic' %}
+    <div class="control-group">
+        <label class="control-label">
+            <i>*</i>
+            填写运营数据
+        </label>
+        <div class="controls">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td><input type="text" name="start_time" id="start_time" class="input-small" placeholder="开始时间" /></td>
+                        <td><input type="text" name="end_time" id="end_time" class="input-small" placeholder="结束时间" /></td>
+                        <td><input type="text" name="custom_name" id="custom_name" class="input-small" placeholder="客户名称" /></td>
+                        <td><input type="text" name="pv" id="pv" class="input-small" placeholder="PV" /></td>
+                        <td><input type="text" name="income" id="income" class="input-small" placeholder="收入" /></td>
+                        <td><input type="text" name="cost" id="cost" class="input-small" placeholder="成本" /></td>
+                        <td><input type="text" name="real_income" id="real_income" class="input-small" placeholder="利润" /></td>
+                        <td><input type="text" name="income_rate" id="income_rate" class="input-small" placeholder="利润率" /></td>
+                        <td><input type="text" name="back_info" id="back_info" class="input-small" placeholder="回款情况" /></td>
+                        <td><input type="text" name="pay_des" id="pay_des" class="input-small" placeholder="备注" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="is_end_test">
+                是否结束填写
+            </label>
+            <div class="controls">
+                <input type="checkbox" value="1" name="is_end_input" id="is_end_input" />是否结束填写?
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="control-group">
+        <label class="control-label">
+            意见
+        </label>
+        <div class="controls">
+            <textarea name="opinion" id="opinion" style="width: 500px; height: 50px;"></textarea>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">
+            加签或转签
+        </label>
+        <div class="controls">
+            <input type="radio" name="changeapp" id="nochange" value="-1" checked />不选择
+            <input type="radio" name="changeapp" id="addapp" value="{{ config.APPROVAL_ADD }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_ADD] }}
+            <input type="radio" name="changeapp" id="turnapp" value="{{ config.APPROVAL_TURN }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_TURN] }}
+
+            <span style="margin-left: 20px;">给谁?</span>
+            <input type="text" name="towho" id="towho" style="width:120px;" placeholder="姓名拼音" />
+            <span class="label label-info">注意！当选择加签或者转签时，必须填写转给谁。当不选择时，下面的审批状态必须选择</span>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <input type="radio" name="approval_status" id="approval_status" value="{{ config.APPROVAL_OK }}" />{{ config.STEP_NAMING[config.APPROVAL_OK] }}
+            <input type="radio" name="approval_status" id="approval_status" value="{{ config.APPROVAL_YET_OK }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_YET_OK] }}
+            <input type="radio" name="approval_status" id="approval_status" value="{{ config.APPROVAL_REJECT }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_REJECT] }}
+        </div>
+    </div>
+    {% endif %}
+    <div class="control-group">
+        <div class="controls">
+            {{ form.hidden_tag() }}
+            <input type="hidden" name="is_ajax" value="1" />
+            <input type="hidden" name="flow_id" value="{{ flow.id }}" />
+            <input type="hidden" name="cate" value="{{ flow.f_type }}" />
+            <input type="hidden" name="u_type" value="{{ config.WORK_FLOW['3']['can'][nowApproval['user_step']] }}" />
+            <button type="submit" class="btn btn-primary">提交</button>
+        </div>
+    </div>
+</form>
+
+
+<script type="text/javascript">
+    $(function() {
+        $('#showlog').click(function() {
+            $('#logshow').toggle(300);
+        });
+        
+        $("#start_time, #end_time").datetimepicker({
+            timepicker:true,
+            format: 'Y-m-d H:i:s',
+            lang: 'ch',
+        });
+
+        $('#showTestLog').click(function() {
+            $('#testLogShow').toggle(300);
+        });        
+
+        var cache = {};
+        $("#towho, #whoPay, #whoTest").autocomplete({
+                minLength: 2,
+                source: function(request, response) {
+                var term = request.term;
+                if (term in cache) {
+                    response(cache[term]);
+                    return;
+                }
+
+                $.getJSON('/getJsonUser', request, function(data, status, xhr) {
+                    cache[term] = data;
+                    response(data);
+                });
+            }
+        });
+    });
+</script>
+

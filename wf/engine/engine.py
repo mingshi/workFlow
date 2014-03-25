@@ -96,7 +96,7 @@ class Engine :
                     if newResInfo['msg'] == 'success' and newResInfo['status'] == 'ok' :
                         step_user = newResInfo['info'][0]['realname']
               
-                if (pay_cost <= app.config['MONEY_LINE'] and self.f_type == 1) or int(self.f_type) == 4 :
+                if (pay_cost <= app.config['MONEY_LINE'] and self.f_type == 1) or int(self.f_type) == 4 or int(self.f_type) == 3 :
                     if newResInfo['info'][0]['higher'] == 0 :
                         self.flag = True
                 else :

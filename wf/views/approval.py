@@ -33,7 +33,7 @@ def approval_flow(f_type, id) :
     form = Approval()
     fType = int(f_type)
     fid = int(id)
-
+    
     flow = db_session.query(Flow).filter_by(id = fid).first()
     
     if not flow :
@@ -43,10 +43,16 @@ def approval_flow(f_type, id) :
     temp = get_approval_temp(fType)
     
     flowDetail = json.loads(flow.detail)
-    
+    if 'contract_pass' in flowDetail :
+        flowDetail['contract_pass'] = int(flowDetail['contract_pass'])        
+
     testNum = 0
     if 'testDetail' in flowDetail :
         testNum = len(flowDetail['testdetail'])
+    
+    operationNum = 0
+    if 'operation' in flowDetail :
+        operationNum = len(flowDetail['operation'])
 
     attachments = db_session.query(Attachment).filter_by(flow_id = fid).all()
 
@@ -63,7 +69,7 @@ def approval_flow(f_type, id) :
     
     if not nowApproval.step_uid == session["'" + app.config['SESSION_UID'] + "'"] :
         return redirect('/403')
-
+    
     if request.method == "POST" :
         is_ajax = request.form['is_ajax']
         if form.validate_on_submit() :
@@ -135,6 +141,41 @@ def approval_flow(f_type, id) :
                     else :
                         return flash_form(form, False, 0, '/approval/log')
             else :
+                if form.data['u_type'] == 'traffic' :
+                    flow = db_session.query(Flow).filter_by(id = fid).first()
+                    if form.data['is_end_input'] == 1 :
+                        engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                        engine.process()
+                    detail = json.loads(flow.detail)
+                    if not 'operation' in detail :
+                        detail['operation'] = []
+
+                    tmp = {}
+                    tmp['start_time'] = str(form.data['start_time']).strip()
+                    tmp['end_time'] = str(form.data['end_time']).strip()
+                    tmp['custom_name'] = str(form.data['custom_name']).strip()
+                    tmp['pv'] = str(form.data['pv']).strip()
+                    tmp['income'] = str(form.data['income']).strip()
+                    tmp['cost'] = str(form.data['cost']).strip()
+                    tmp['real_income'] = str(form.data['real_income']).strip()
+                    tmp['income_rate'] = str(form.data['income_rate']).strip()
+                    tmp['back_info'] = str(form.data['back_info']).strip()
+                    tmp['pay_des'] = str(form.data['pay_des']).strip()
+                    
+                    if tmp['start_time'] and tmp['end_time'] and tmp['custom_name'] and tmp['pv'] and tmp['income'] and tmp['cost'] and tmp['real_income'] and tmp['income_rate'] and tmp['back_info'] and tmp['pay_des'] :
+                        detail['operation'].append(tmp)
+                        detail = json.dumps(detail)
+                        flow.detail = detail
+                        db_session.commit()
+                    if not form.data['is_end_input'] == 1 :
+                        flash(u'保存成功', 'succ')
+                        return redirect('/approval/' + str(f_type) + '/' + str(fid))
+                    else :
+                        if is_ajax :
+                            return flash_form(form, True, 0, '/approval/log')
+                        else :
+                            return flash_form(form, False, 0, '/approval/log')
+
                 thisStep.approval_msg = form.data['opinion']
                 thisStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
                 if form.data['approval_status'] :
@@ -162,9 +203,9 @@ def approval_flow(f_type, id) :
             if is_ajax :
                 return flash_form(form, True, -1)
             else :
-                return render_template('wf/' + temp, flow = flow, testNum = testNum, flowDetail = flowDetail, attachments = atts, logs = approval_logs, logsNum = logsNum, form = form, nowApproval = nowApproval)
+                return render_template('wf/' + temp, flow = flow, testNum = testNum, flowDetail = flowDetail, attachments = atts, logs = approval_logs, logsNum = logsNum, form = form, nowApproval = nowApproval, operationNum = operationNum)
     else :
-        return render_template('wf/' + temp, flow = flow, flowDetail = flowDetail, testNum = testNum, attachments = atts, logs = approval_logs, logsNum = logsNum, form = form, nowApproval = nowApproval)
+        return render_template('wf/' + temp, flow = flow, flowDetail = flowDetail, testNum = testNum, attachments = atts, logs = approval_logs, logsNum = logsNum, form = form, nowApproval = nowApproval, operationNum = operationNum)
 
 
 @mod.route('/approval/<f_type>/from_config/<fid>', methods=['POST'])
@@ -269,6 +310,34 @@ def approval_by_config(f_type, fid) :
                     detail = json.dumps(detail)
                     flow.detail = detail
                     db_session.commit()
+            
+            if form.data['u_type'] == 'traffic' :
+                flow = db_session.query(Flow).filter_by(id = fid).first()
+                if form.data['is_end_input'] == 1 :
+                    engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], fid)
+                    engine.process()
+                detail = json.loads(flow.detail)
+                if not 'operation' in detail :
+                    detail['operation'] = []
+
+                tmp = {}
+                tmp['start_time'] = str(form.data['start_time']).strip()
+                tmp['end_time'] = str(form.data['end_time']).strip()
+                tmp['custom_name'] = str(form.data['custom_name']).strip()
+                tmp['pv'] = str(form.data['pv']).strip()
+                tmp['income'] = str(form.data['income']).strip()
+                tmp['cost'] = str(form.data['cost']).strip()
+                tmp['real_income'] = str(form.data['real_income']).strip()
+                tmp['income_rate'] = str(form.data['income_rate']).strip()
+                tmp['back_info'] = str(form.data['back_info']).strip()
+                tmp['pay_des'] = str(form.data['pay_des']).strip()
+
+                if tmp['start_time'] and tmp['end_time'] and tmp['custom_name'] and tmp['pv'] and tmp['income'] and tmp['cost'] and tmp['real_income'] and tmp['income_rate'] and tmp['back_info'] and tmp['pay_des'] :
+                    detail['operation'].append(tmp)
+                    detail = json.dumps(detail)
+                    flow.detail = detail
+                    db_session.commit()
+
 
             if form.data['u_type'] == 'ceo' :
                 if form.data['ceo_approval_status'] == app.config['APPROVAL_OK'] :

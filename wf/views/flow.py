@@ -20,6 +20,7 @@ from datetime import date
 from formValidate.testFlowForm import testFlowForm
 from formValidate.connectFlowForm import connectFlowForm
 from formValidate.contractFlowForm import contractFlowForm
+from formValidate.payFlowForm import payFlowForm
 import os
 import time
 import datetime
@@ -40,7 +41,7 @@ def flow_add_by_type(id) :
     elif id == 2 :
         form = connectFlowForm()
     elif id == 3 :
-        pass
+        form = payFlowForm()
     elif id == 4 :
         form = contractFlowForm()
     temp = get_type_temp(id)
@@ -150,6 +151,8 @@ def flow_detail(f_type, fid) :
         form = testFlowForm()
     elif int(f_type) == 2 :
         form = connectFlowForm()
+    elif int(f_type) == 3 :
+        form = payFlowForm()
     elif int(f_type) == 4 :
         form = contractFlowForm()
     temp = get_detail_temp(int(f_type))
@@ -161,6 +164,8 @@ def flow_detail(f_type, fid) :
         return redirect('/flow/add')
 
     flowDetail = json.loads(flow.detail)
+    if 'contract_pass' in flowDetail :
+        flowDetail['contract_pass'] = int(flowDetail['contract_pass'])
     testNum = 0
     if 'testdetail' in flowDetail :
         testNum = len(flowDetail['testdetail'])
@@ -238,3 +243,21 @@ def del_attachment(fid, aid) :
     
     flash(u'删除成功', 'succ')
     return redirect('/flow/detail/'+ str(flow.f_type) + '/' + str(fid)) 
+
+@mod.route('/flow/deloperation/<f_type>/<fid>/<oid>', methods=['GET'])
+def del_operation(f_type, fid, oid) :
+    myuid = session["'" + app.config['SESSION_UID'] + "'"]
+    nowStep = db_session.query(Step).filter_by(flow_id = int(fid)).order_by(Step.create_time.desc()).first()
+    if not nowStep.user_from == app.config['USER_FROM_CONFIG'] or not myuid == nowStep.step_uid or not app.config['WORK_FLOW'][f_type]['can'][nowStep.user_step] == 'traffic' :
+        return redirect('/403')
+
+    flow = db_session.query(Flow).filter_by(id = fid).first()
+    detail = json.loads(flow.detail)
+    detail['operation'].remove(detail['operation'][int(oid)])
+    
+    detail = json.dumps(detail)
+    flow.detail = detail
+
+    db_session.commit()
+    flash(u'删除成功', 'succ')
+    return redirect('/approval/' + str(f_type) + '/' + str(fid))

@@ -121,4 +121,6 @@ def after_request(response) :
     logRequest(s)
     return response
 
-
+@app.template_filter('get_int')
+def get_int(num) :
+    return int(num)
