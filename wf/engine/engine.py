@@ -80,7 +80,9 @@ class Engine :
                 
                 flow = db_session.query(Flow).filter_by(id = self.fid).first()
                 flow_detail = json.loads(flow.detail)
-                pay_cost = flow_detail['pay_cost']
+                pay_cost = 0
+                if 'pay_cost' in flow_detail :
+                    pay_cost = flow_detail['pay_cost']
 
                 res = get_multi_user_info_by_uid(lastUid)
                 res_info = json.loads(res)
@@ -93,9 +95,9 @@ class Engine :
                     newResInfo = json.loads(newRes)
                     if newResInfo['msg'] == 'success' and newResInfo['status'] == 'ok' :
                         step_user = newResInfo['info'][0]['realname']
-               
-                if pay_cost >= app.config['MONEY_LINE'] and self.f_type == 1 :
-                    if res_info['info'][0]['higher'] == 0 :
+              
+                if (pay_cost <= app.config['MONEY_LINE'] and self.f_type == 1) or int(self.f_type) == 4 :
+                    if newResInfo['info'][0]['higher'] == 0 :
                         self.flag = True
                 else :
                     if res_info['info'][0]['higher'] == 0 :

@@ -63,7 +63,7 @@ def get_approval_temp(f_type) :
     elif f_type == 3 :
         temp = "payApproval.html"
     elif f_type == 4 :
-        temp = "contractAPProval.html"
+        temp = "contractApproval.html"
     else :
         temp = "testApproval.html"
 

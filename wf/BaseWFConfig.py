@@ -21,5 +21,11 @@ WORK_FLOW = {
             'uid' : [1, 11, 1, 1],
             'des' : ['财务审核', '流量运营专员', '合同管理专员', '关闭'],
             'can' : ['finance', 'trafficadmin', 'contractadmin', 'closer']
+        },
+
+        '4' : {
+            'uid' : [11, 1, 18, 1],
+            'des' : ['财务审核', 'ceo审核', '合同专员审核', '关闭'],
+            'can' : ['finance', 'ceo', 'contractadmin', 'closer']
         }
 }

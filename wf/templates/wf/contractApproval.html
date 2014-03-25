@@ -1,0 +1,208 @@
+{% extends "layout.html" %}
+
+{% block title %}审批流程 - {{ flow.subject }}{% endblock %}
+
+{% block main %}
+<div class="backMain">
+    <fieldset>
+        <legend>审批流程 - {{ flow.subject }}</legend>
+    </fieldset>
+
+    <ul class="thumbnails inline create">
+        <li>申请人: {{ flow.create_user }}</li>
+        <li>申请时间: {{ flow.create_time }}</li>
+    </ul>
+
+    <div class="form-horizontal">
+        <div class="control-group">
+            <input type="hidden" name="is_ajax" value="1" />
+            <label class="control-label">
+                <i>*</i>
+                标题
+            </label>
+            <div class="controls">
+                <input class="input-xxlarge" type="text" name="subject" value="{{ flow.subject }}" readonly />
+            </div>
+        </div>
+
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    媒体类别
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="media_type" value="{{ flowDetail.media_type }}" readonly />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    广告位置
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="ad_position" value="{{ flowDetail.ad_position }}" readonly />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    采购流量
+                </label>
+                <div class="controls">
+                    <input class="input-large" type="text" name="get_traffic" value="{{ flowDetail.get_traffic }}" readonly />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    正式接入时间
+                </label>
+                <div class="controls">
+                    <input class="input-large" id="start_connect_time" name="start_connect_time" type="text" value="{{ flowDetail.start_connect_time }}" readonly  />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    合同编号
+                </label>
+                <div class="controls">
+                    <input class="input-large" id="contract_num" name="contract_num" type="text" value="{{ flowDetail.contract_num }}" readonly />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    合同对方名称
+                </label>
+                <div class="controls">
+                    <input class="input-large" id="contract_name" name="contract_name" type="text" value="{{ flowDetail.contract_name }}" readonly />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    扣量情况
+                </label>
+                <div class="controls">
+                    <input type="text" class="input-large" name="cut_info" value="{{ flowDetail.cut_info }}" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div style="float: left;">
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    投放媒体名称
+                </label>
+                <div class="controls">
+                    <input type="text" class="input-large" name="media_name" value="{{ flowDetail.media_name }}" readonly />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    关联流程ID
+                </label>
+                <div class="controls">
+                    <input type="text" class="input-large" name="relation_id" value="{{ flow.relation }}" readonly />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    广告位ID
+                </label>
+                <div class="controls">
+                    <input type="text" class="input-large" name="slot_id" value="{{ flowDetail.slot_id }}" readonly />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    合同采购成本
+                </label>
+                <div class="controls">
+                    <input type="text" class="input-large" name="contract_cost" value="{{ flowDetail.contract_cost }}" readonly />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    付款方式
+                </label>
+                <div class="controls">
+                    <select id="pay_type" name="pay_type">
+                        {% for item in config.PAY_TYPE %}
+                        <option value="{{ item }}" {% if flowDetail.pay_type == item %} selected {% endif %}>{{ config.PAY_TYPE[item] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    账期
+                </label>
+                <div class="controls">
+                    <select id="account_time" name="account_time">
+                        {% for item in config.ACCOUNT_TIME %}
+                        <option value="{{ item }}" {% if flowDetail.account_time == item %} selected {% endif %}>{{ item }}天</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    我方签约主体
+                </label>
+                <div class="controls">
+                    <input type="text" class="input-large" name="contract_main" value="{{ flowDetail.contract_main }}" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div style="clear: both;"></div>
+        
+        {% if attachments %}
+        <div class="control-group">
+            <label class="control-label">
+                附件
+            </label>
+            <div class="controls">
+                <ul class="thumbnails">
+                    {% for attachment in attachments %}
+                    <li><a href="{{ url_for('static', filename=attachment) }}" target="_blank"><img style="width:120px" src="{{ url_for('static', filename=attachment) }}" /></a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="control-group">
+            <label class="control-label">
+                其他说明
+            </label>
+            <div class="controls">
+                <textarea readonly name="des" style="width:500px; height:100px;" placeholder="100字以内" id="des">{{ flow.des }}</textarea>
+            </div>
+        </div>
+        
+        {% include "wf/baseConnectApproval.html" %}
+    </div>
+</div>
+{% endblock %}

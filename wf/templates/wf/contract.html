@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}创建媒体正式接入流程{% endblock %}
+{% block title %}创建媒体合同审批流程{% endblock %}
 
 {% block main %}
 <link rel="stylesheet" href="{{ url_for('static', filename='datetimepicker/jquery.datetimepicker.css') }}" media="all" />
@@ -56,7 +56,7 @@
                     <input class="input-large" type="text" name="ad_position" />
                 </div>
             </div>
-            
+
             <div class="control-group">
                 <label class="control-label">
                     <i>*</i>
@@ -66,7 +66,7 @@
                     <input class="input-large" type="text" name="get_traffic" />
                 </div>
             </div>
-            
+
             <div class="control-group">
                 <label class="control-label">
                     <i>*</i>
@@ -80,29 +80,30 @@
             <div class="control-group">
                 <label class="control-label">
                     <i>*</i>
-                    合同流程是否通过
+                    合同编号
                 </label>
                 <div class="controls">
-                    <select id="contract_pass" name="contract_pass" style="width: 100px;">
-                        {% for item in config.CONTRACT_PASS_NAMING %}
-                        <option value="{{ item }}">{{ config.CONTRACT_PASS_NAMING[item] }}</option>
-                        {% endfor %}
-                    </select>
-                    <input type="text" name="contract_num" id="contract_num" style="display: none;" class="input-small" placeholder="合同编号" />
+                    <input class="input-large" id="contract_num" name="contract_num" type="text" />
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    合同对方名称
+                </label>
+                <div class="controls">
+                    <input class="input-large" id="contract_name" name="contract_name" type="text" />
                 </div>
             </div>
 
             <div class="control-group">
                 <label class="control-label">
                     <i>*</i>
-                    付款方式
+                    扣量情况
                 </label>
                 <div class="controls">
-                    <select id="pay_type" name="pay_type">
-                        {% for item in config.PAY_TYPE %}
-                        <option value="{{ item }}">{{ config.PAY_TYPE[item] }}</option>
-                        {% endfor %}
-                    </select>
+                    <input type="text" class="input-large" name="cut_info" />
                 </div>
             </div>
         </div>
@@ -110,20 +111,20 @@
         <div style="float: left;">
             <div class="control-group">
                 <label class="control-label">
-                    关联流程ID
-                </label>
-                <div class="controls">
-                    <input type="text" class="input-large" name="relation_id" />
-                </div>
-            </div>
-            
-            <div class="control-group">
-                <label class="control-label">
                     <i>*</i>
                     投放媒体名称
                 </label>
                 <div class="controls">
                     <input type="text" class="input-large" name="media_name" />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    关联流程ID
+                </label>
+                <div class="controls">
+                    <input type="text" class="input-large" name="relation_id" />
                 </div>
             </div>
 
@@ -146,14 +147,18 @@
                     <input type="text" class="input-large" name="contract_cost" />
                 </div>
             </div>
-             
+
             <div class="control-group">
                 <label class="control-label">
                     <i>*</i>
-                    扣量情况
+                    付款方式
                 </label>
                 <div class="controls">
-                    <input type="text" class="input-large" name="cut_info" />
+                    <select id="pay_type" name="pay_type">
+                        {% for item in config.PAY_TYPE %}
+                        <option value="{{ item }}">{{ config.PAY_TYPE[item] }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
@@ -170,79 +175,19 @@
                     </select>
                 </div>
             </div>
-        </div>
 
+            <div class="control-group">
+                <label class="control-label">
+                    <i>*</i>
+                    我方签约主体
+                </label>
+                <div class="controls">
+                    <input type="text" class="input-large" name="contract_main" />
+                </div>
+            </div> 
+        </div>
+        
         <div style="clear: both;"></div>
-        
-        <div id="is_show" style="display: none;">
-            <div class="control-group">
-                <label class="control-label"> 
-                    <i>*</i>
-                    付款时间段
-                </label>
-                <div class="controls">
-                    <input id="start_pay_time" class="input-small" type="text" name="start_pay_time" placeholder="付款开始时间段" /> - 
-                    <input id="end_pay_time" class="input-small" type="text" name="end_pay_time" placeholder="付款开始时间段" /> 
-                </div>
-            </div>
-
-            <div style="float: left;">
-                <div class="control-group">
-                    <label class="control-label">
-                        <i>*</i>
-                        付款公司
-                    </label>
-                    <div class="controls">
-                        <input class="input-large" type="text" name="pay_company" />
-                    </div>
-                </div>
-            </div>
-
-            <div style="float: left;">
-                <div class="control-group">
-                    <label class="control-label">
-                        <i>*</i>
-                        最晚付款时间及总额
-                    </label>
-                    <div class="controls">
-                        <input id="end_pay_time_dead" class="input-small" type="text" name="end_pay_time_dead" />
-                        <input id="pay_cost" class="input-small" type="text" name="pay_cost" placeholder="付款总额" />
-                    </div>
-                </div>
-            </div>
-            
-            <div style="clear: both;"></div>
-        
-            <div class="control-group">
-                <label class="control-label">
-                    <i>*</i>
-                    媒体账户名
-                </label>
-                <div class="controls">
-                    <input class="input-xxlarge" name="media_account" type="text" />
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label">
-                    <i>*</i>
-                    银行卡号
-                </label>
-                <div class="controls">
-                    <input class="input-xxlarge" name="card_number" type="text" placeholder="纯数字,无需空格" />
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label">
-                    <i>*</i>
-                    开户行名称
-                </label>
-                <div class="controls">
-                    <input class="input-xxlarge" name="media_bank" placeholder="xxx银行 xxx支行" type="text" />
-                </div>
-            </div>
-        </div>
 
         <div class="control-group">
             <label class="control-label">
@@ -270,9 +215,9 @@
                 <button type="submit" class="btn btn-large btn-primary">提交</button>
             </div>
         </div>
-    </form> 
+    </form>
 
-    {% include "wf/myUpload.html" %}   
+    {% include "wf/myUpload.html" %}
 </div>
 {% endblock %}
 
@@ -284,29 +229,6 @@ $(function() {
         format: 'Y-m-d H:i:s',
         lang: 'ch',
     });
-
-    $('#start_pay_time, #end_pay_time').datetimepicker({
-        timepicker:true,
-        format: 'H:i:s',
-        lang: 'ch'
-    });
-
-    $("#pay_type").change(function() {
-        if ($("#pay_type").val() == 3) {
-            $("#is_show").show();
-        } else {
-            $("#is_show").hide();
-        }
-    });
-
-    $("#contract_pass").change(function() {
-        if ($("#contract_pass").val() == {{ config.IS_PASS }}) {
-            $("#contract_num").show();
-        } else {
-            $("#contract_num").hide();
-        }
-    });
-
 });
 </script>
 {% endblock %}

@@ -19,6 +19,7 @@ from wf.util.libs import *
 from datetime import date
 from formValidate.testFlowForm import testFlowForm
 from formValidate.connectFlowForm import connectFlowForm
+from formValidate.contractFlowForm import contractFlowForm
 import os
 import time
 import datetime
@@ -38,7 +39,10 @@ def flow_add_by_type(id) :
         form = testFlowForm()
     elif id == 2 :
         form = connectFlowForm()
-    
+    elif id == 3 :
+        pass
+    elif id == 4 :
+        form = contractFlowForm()
     temp = get_type_temp(id)
     today = str(date.today())
 
@@ -146,6 +150,8 @@ def flow_detail(f_type, fid) :
         form = testFlowForm()
     elif int(f_type) == 2 :
         form = connectFlowForm()
+    elif int(f_type) == 4 :
+        form = contractFlowForm()
     temp = get_detail_temp(int(f_type))
     fid = int(fid)
     flow = db_session.query(Flow).filter_by(id = fid).first()
