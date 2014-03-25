@@ -67,62 +67,90 @@ def approval_flow(f_type, id) :
     if request.method == "POST" :
         is_ajax = request.form['is_ajax']
         if form.validate_on_submit() :
-            thisStep = db_session.query(Step).filter(and_(Step.flow_id == fid, Step.step_uid == session["'" + app.config['SESSION_UID'] + "'"])).order_by(Step.update_time.desc()).first()
-
-            if ((int(form.data['changeapp']) == -1 or int(form.data['changeapp']) == app.config['APPROVAL_ADD']) and int(form.data['approval_status']) == app.config['APPROVAL_REJECT']) :
-                thisStep.approval_status = int(form.data['approval_status'])
-                thisStep.approval_msg = form.data['opinion']
-                thisStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
-                thisStep.step = thisStep.step + 1
-                thisStep.user_step = thisStep.user_step + 1
-
-                db_session.commit()
-
-                thisFlow = db_session.query(Flow).filter_by(id = fid).first()
-                thisFlow.status = app.config['FLOW_STATUS_REJECT']
-                db_session.commit()
-                
-                if is_ajax :
-                    return flash_form(form, True, 0, '/approval/log')
-                else :
-                    return flash_form(form, False, 0, '/approval/log')
-
-            if int(form.data['changeapp']) == app.config['APPROVAL_ADD'] or int(form.data['changeapp']) == app.config['APPROVAL_TURN'] :
-                if int(form.data['changeapp']) == app.config['APPROVAL_ADD'] :
+            thisStep = db_session.query(Step).filter(and_(Step.flow_id == fid, Step.step_uid == session["'" + app.config['SESSION_UID'] + "'"])).order_by(Step.create_time.desc()).first()
+            
+            if form.data['changeapp'] :
+                if ((int(form.data['changeapp']) == -1 or int(form.data['changeapp']) == app.config['APPROVAL_ADD']) and int(form.data['approval_status']) == app.config['APPROVAL_REJECT']) :
                     thisStep.approval_status = int(form.data['approval_status'])
-                else :
-                    thisStep.approval_status = int(form.data['changeapp'])
-                thisStep.approval_msg = form.data['opinion']
-                thisStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
-                thisStep.step = thisStep.step + 1
-                thisStep.user_step = thisStep.user_step + 1
+                    thisStep.approval_msg = form.data['opinion']
+                    thisStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
 
-                db_session.commit()
-                
-                step_uid = form.data['towho'].encode('utf-8').split(' ')[0]
-                
-                newStep = int(thisStep.step) + 1
-                newUserStep = thisStep.user_step + 1
-                newStepUser = form.data['towho'].encode('utf-8').split(' ')[1].decode('utf-8')
-                newStep = Step(flow_id = fid, step = newStep, step_uid = step_uid, approval_status = app.config['APPROVAL_NEW'], approval_msg = '', user_from = 1, user_step = newUserStep, step_user = newStepUser, is_add_turn = app.config['IS_ADD_TURN'])
-                db_session.add(newStep)
-                db_session.commit()
+                    db_session.commit()
 
-                if is_ajax :
-                    return flash_form(form, True, 0, '/approval/log')
+                    thisFlow = db_session.query(Flow).filter_by(id = fid).first()
+                    thisFlow.status = app.config['FLOW_STATUS_REJECT']
+                    db_session.commit()
+                    
+                    if is_ajax :
+                        return flash_form(form, True, 0, '/approval/log')
+                    else :
+                        return flash_form(form, False, 0, '/approval/log')
+
+                if int(form.data['changeapp']) == app.config['APPROVAL_ADD'] or int(form.data['changeapp']) == app.config['APPROVAL_TURN'] :
+                    if int(form.data['changeapp']) == app.config['APPROVAL_ADD'] :
+                        thisStep.approval_status = int(form.data['approval_status'])
+                    else :
+                        thisStep.approval_status = int(form.data['changeapp'])
+                    thisStep.approval_msg = form.data['opinion']
+                    thisStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+
+                    db_session.commit()
+                    
+                    step_uid = form.data['towho'].encode('utf-8').split(' ')[0]
+                    
+                    newStep = int(thisStep.step) + 1
+                    if thisStep.user_from == app.config['USER_FROM_CONFIG'] :
+                        newUserStep = thisStep.user_step
+                    else :
+                        newUserStep = thisStep.user_step + 1
+                    newStepUser = form.data['towho'].encode('utf-8').split(' ')[1].decode('utf-8')
+                    newStep = Step(flow_id = fid, step = newStep, step_uid = step_uid, approval_status = app.config['APPROVAL_NEW'], approval_msg = '', user_from = thisStep.user_from, user_step = newUserStep, step_user = newStepUser, is_add_turn = app.config['IS_ADD_TURN'])
+                    db_session.add(newStep)
+                    db_session.commit()
+
+                    if is_ajax :
+                        return flash_form(form, True, 0, '/approval/log')
+                    else :
+                        return flash_form(form, False, 0, '/approval/log')
                 else :
-                    return flash_form(form, False, 0, '/approval/log')
+                    thisStep.approval_msg = form.data['opinion']
+                    thisStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+                    if form.data['approval_status'] :
+                        thisStep.approval_status = int(form.data['approval_status'])
+                    elif form.data['is_close'] :
+                        thisStep.approval_status = int(app.config['APPROVAL_CLOSE'])
+
+                    db_session.commit()
+                    
+                    if not form.data['is_close'] :
+                        engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], thisStep.flow_id)
+                        engine.process()
+                    else :
+                        if form.data['is_close'] == app.config['APPROVAL_CLOSE'] :
+                            flow.status = app.config['FLOW_STATUS_FINISH']
+                            db_session.commit()
+
+                    if is_ajax :
+                        return flash_form(form, True, 0, '/approval/log')
+                    else :
+                        return flash_form(form, False, 0, '/approval/log')
             else :
                 thisStep.approval_msg = form.data['opinion']
                 thisStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
-                thisStep.step = thisStep.step + 1
-                thisStep.user_step = thisStep.user_step + 1
-                thisStep.approval_status = int(form.data['approval_status'])
+                if form.data['approval_status'] :
+                    thisStep.approval_status = int(form.data['approval_status'])
+                elif form.data['is_close'] :
+                    thisStep.approval_status = int(app.config['APPROVAL_CLOSE'])
 
                 db_session.commit()
-
-                engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], thisStep.flow_id)
-                engine.process()
+                
+                if not 'is_close' in form.data :
+                    engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], thisStep.flow_id)
+                    engine.process()
+                else :
+                    if form.data['is_close'] == app.config['APPROVAL_CLOSE'] :
+                        flow.status = app.config['FLOW_STATUS_FINISH']
+                        db_session.commit()
 
                 if is_ajax :
                     return flash_form(form, True, 0, '/approval/log')
@@ -287,10 +315,11 @@ def approval_by_config(f_type, fid) :
                 nowStep.update_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
 
                 db_session.commit()
-
-                flow =  db_session.query(Flow).filter_by(id = fid).first()
-                flow.status = form.data['is_close']
-                db_session.commit()
+                
+                if form.data['is_close'] == app.config['FLOW_STATUS_FINISH'] :
+                    flow =  db_session.query(Flow).filter_by(id = fid).first()
+                    flow.status = form.data['is_close']
+                    db_session.commit()
 
             if is_ajax :
                 return flash_form(form, True, 0, '/approval/log')

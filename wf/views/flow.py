@@ -142,8 +142,11 @@ def deleteUpload() :
 
 @mod.route('/flow/detail/<f_type>/<fid>', methods=['GET', 'POST'])
 def flow_detail(f_type, fid) :
-    form = testFlowForm()
-    temp = get_detail_temp(f_type)
+    if int(f_type) == 1 :
+        form = testFlowForm()
+    elif int(f_type) == 2 :
+        form = connectFlowForm()
+    temp = get_detail_temp(int(f_type))
     fid = int(fid)
     flow = db_session.query(Flow).filter_by(id = fid).first()
 
@@ -193,7 +196,7 @@ def flow_detail(f_type, fid) :
 
                 del session['pics']
 
-            engine = Engine(1, session["'" + app.config['USER_INFO_HIGHER'] + "'"], flow.id)
+            engine = Engine(f_type, session["'" + app.config['USER_INFO_HIGHER'] + "'"], flow.id)
             engine.process()
 
             if is_ajax :

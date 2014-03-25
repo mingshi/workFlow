@@ -47,6 +47,19 @@
 </div>
 
 <form class="ajax form-horizontal" autocomplete="off" method="post" action="">
+    {% if nowApproval.user_from == config.USER_FROM_CONFIG and config.WORK_FLOW['2']['can'][nowApproval['user_step']] == 'closer' %}
+    <div class="control-group">
+        <label class="control-label">
+            是否关闭
+        </label>
+        <div class="controls">
+            <select name="is_close" id="is_close">
+                <option value="{{ config.FLOW_STATUS_RUNNING }}">{{ config.FLOW_NAMING[config.FLOW_STATUS_RUNNING] }}</option>
+                <option value="{{ config.FLOW_STATUS_FINISH }}">{{ config.FLOW_NAMING[config.FLOW_STATUS_FINISH] }}</option>
+            </select>
+        </div>
+    </div>
+    {% else %}
     <div class="control-group">
         <label class="control-label">
             意见
@@ -78,12 +91,15 @@
             <input type="radio" name="approval_status" id="approval_status" value="{{ config.APPROVAL_REJECT }}" style="margin-left: 20px;" />{{ config.STEP_NAMING[config.APPROVAL_REJECT] }}
         </div>
     </div>
+    {% endif %}
+
     <div class="control-group">
         <div class="controls">
             {{ form.hidden_tag() }}
             <input type="hidden" name="is_ajax" value="1" />
             <input type="hidden" name="flow_id" value="{{ flow.id }}" />
             <input type="hidden" name="cate" value="{{ flow.f_type }}" />
+            <input type="hidden" name="u_type" value="{{ config.WORK_FLOW['2']['can'][nowApproval['user_step']] }}" />
             <button type="submit" class="btn btn-primary">提交</button>
         </div>
     </div>

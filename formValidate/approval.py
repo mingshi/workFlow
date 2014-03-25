@@ -14,9 +14,10 @@ from wf import app
 class Approval(Form) :
     flow_id         =   IntegerField(u'流程id', validators=[DataRequired('流程id是必须的')])
     opinion         =   TextAreaField(u'意见', validators=[Optional()])
-    changeapp       =   IntegerField(u'是否转签或加签', validators=[DataRequired('是否转签或加签必须选择或不选')])
+    changeapp       =   IntegerField(u'是否转签或加签', validators=[Optional(), DataRequired('是否转签或加签必须选择或不选')])
     towho           =   TextField(u'交给谁', validators=[Optional()])
     approval_status =   IntegerField(u'审批状态')
+    is_close        =   IntegerField(u'是否关闭', validators=[Optional()])
 
     def __init__(self, *args, **kwargs) :
         Form.__init__(self, *args, **kwargs)
@@ -25,25 +26,26 @@ class Approval(Form) :
         rv = Form.validate(self)
         if not rv :
             return False
+        
+        if self.changeapp.data :
+            if int(self.changeapp.data) == -1 and not self.approval_status.data:
+                flash(u'审批状态必须选择', 'error')
+                return False
 
-        if int(self.changeapp.data) == -1 and not self.approval_status.data:
-            flash(u'审批状态必须选择', 'error')
-            return False
+            if int(self.changeapp.data) == 3 and not self.approval_status.data :
+                flash(u'审批状态必须选择', 'error')
+                return False
 
-        if int(self.changeapp.data) == 3 and not self.approval_status.data :
-            flash(u'审批状态必须选择', 'error')
-            return False
+            if int(self.changeapp.data) == 3 and not self.towho.data:
+                flash(u'交给谁必须填写', 'error')
+                return False
 
-        if int(self.changeapp.data) == 3 and not self.towho.data:
-            flash(u'交给谁必须填写', 'error')
-            return False
+            if int(self.changeapp.data) == 3 and not self.approval_status.data and not self.towho.data:
+                flash(u'审批状态必须选择,交给谁必须填写', 'error')
+                return False
 
-        if int(self.changeapp.data) == 3 and not self.approval_status.data and not self.towho.data:
-            flash(u'审批状态必须选择,交给谁必须填写', 'error')
-            return False
-
-        if int(self.changeapp.data) == 2 and not self.towho.data :
-            flash(u'交给谁必须填写', 'error')
-            return False
+            if int(self.changeapp.data) == 2 and not self.towho.data :
+                flash(u'交给谁必须填写', 'error')
+                return False
 
         return True

@@ -36,7 +36,7 @@ class Engine :
             #检查是否已经在config文件读取
             tmpApproval = db_session.query(Step).filter(Step.flow_id == self.fid).order_by(Step.create_time.desc()).first()
             
-            if tmpApproval.user_from == app.config['USER_FROM_CONFIG'] :
+            if tmpApproval.user_from == app.config['USER_FROM_CONFIG'] and not tmpApproval.approval_status == app.config['APPROVAL_REJECT']:
                 nextKey = tmpApproval.user_step + 1
                 step = tmpApproval.step + 1
                 step_uid = app.config['WORK_FLOW'][self.f_type]['uid'][nextKey]
@@ -66,7 +66,11 @@ class Engine :
                 db_session.commit()
 
             else :
-                lastUid = lastApproval.step_uid
+                lastStep = db_session.query(Step).filter_by(flow_id = self.fid).order_by(Step.create_time.desc()).first()
+                if lastStep.approval_status == app.config['APPROVAL_REJECT'] :
+                    lastUid = session["'" + app.config['SESSION_UID'] + "'"]
+                else :
+                    lastUid = lastApproval.step_uid
                 
                 # 检查上一个是不是加签或者转签
                 step = lastApproval.step + 1
